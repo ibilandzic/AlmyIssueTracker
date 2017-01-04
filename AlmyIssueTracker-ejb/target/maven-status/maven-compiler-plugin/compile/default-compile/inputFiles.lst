@@ -1,0 +1,15 @@
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\IssueCategory.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\Role.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\dao\UserDAO.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\Priority.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\Allocation.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\State.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\Message.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\User.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\dao\UserDAOLocal.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\dto\UserDTO.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\Company.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\dao\CompanyDAO.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\Location.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\Ticket.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\dao\CompanyDAOLocal.java
