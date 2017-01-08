@@ -12,37 +12,41 @@
         <h:body>
             <p:layoutUnit position="north" >
 
-                <p:toolbar>
-                    <p:toolbarGroup>
-                    
-                        <h:commandButton value="Login" onclick="PF('loginDlg').show();" title="login" rendered="#{not authBackingBean.isRegistered}" />
 
-                        <p:commandButton id="logoutBtn" rendered="#{authBackingBean.isRegistered}" action="#{authBackingBean.logout()}"/>
+                <p:toolbar id="authToolbar">
 
-                            <p:dialog header="Login" widgetVar="loginDlg" resizable="false">
-                                <h:panelGrid columns="2" cellpadding="5">
-                                    <h:outputLabel for="username" value="Username:" />
-                                    <p:inputText id="username" value="#{authBackingBean.username}" required="true" label="username" />
+                    <f:facet name="right">
+                        <!--
+                                                <h:commandButton value="Login" onclick="PF('loginDlg').show();" title="login" rendered="#{not authBackingBean.isRegistered}" />
+                                                <h:outputText value="Trenutni korisnik: #{authBackingBean.username} " rendered="#{authBackingBean.isRegistered}"/>
+                                                <p:commandButton  id="logoutBtn" value="Logout" rendered="#{authBackingBean.isRegistered}" action="#{authBackingBean.logout()}"/>
+                                                <h:form id="loginForm">
+                                                    <p:dialog header="Login" widgetVar="loginDlg" resizable="false">
+                                                        <h:panelGrid columns="2" cellpadding="5">
+                                                            <h:outputLabel for="username" value="Username:" />
+                                                            <p:inputText id="username" value="#{authBackingBean.username}" required="true" label="username" />
+                        
+                                                            <h:outputLabel for="password" value="Password:" />
+                                                            <p:password id="password" value="#{authBackingBean.password}" required="true" label="password" />
+                        
+                                                            <f:facet name="footer">
+                                                                <p:commandButton value="Login" update="@all" action="#{authBackingBean.login()}"
+                                                                                 oncomplete="PF('loginDlg').hide();"/>
+                                                            </f:facet>  
+                                                        </h:panelGrid>
+                                                    </p:dialog>
+                        
+                                                </h:form>
+                        -->
+                        <ui:include src="pageFragments/authorizationToolbar.xhtml" />
 
-                                    <h:outputLabel for="password" value="Password:" />
-                                    <p:password id="password" value="#{authBackingBean.password}" required="true" label="password" />
-
-                                    <f:facet name="footer">
-                                        <p:commandButton value="Login" update=":companyForm" action="#{authBackingBean.login()}"
-                                                         immediate="true" oncomplete="PF('loginDlg').hide();"/>
-                                    </f:facet>  
-                                </h:panelGrid>
-                            </p:dialog>
-
-
-
-                    
-                        </p:toolbarGroup>
+                    </f:facet>
                 </p:toolbar>
 
-            </p:layoutUnit>
-            <p:layoutUnit position="centar" rendered="#{authBackingBean.admin}">
 
+            </p:layoutUnit>
+            <p:layoutUnit position="centar" rendered="#{authBackingBean.admin}" id="dataUnit">
+                <!--
                 <h:form id="companyForm">
                     <h1><h:outputText value="Company list"/></h1>
                     <p:dataTable value="#{companyBackingBean.companies}" 
@@ -126,10 +130,10 @@
                     </p:dataTable>
 
                     <p:commandButton id="createCompanyBtn" onclick="PF('companyDlg').show()" value="Add"/>
-                    <!-- delete command button -->
+                    <
                     <p:commandButton id="deleteCompanyBtn"  value="Delete" action="#{companyBackingBean.deleteCompany()}"/>
 
-                    <!-- new company dialog -->
+                   
                     <p:dialog header="Create new company" widgetVar="companyDlg" minHeight="40" visible="false" id="companyDlg">
                         <p:outputPanel id="newCompanyForm">
                             <h:panelGrid columns="2">
@@ -150,7 +154,17 @@
                         </p:outputPanel>
                     </p:dialog>
                 </h:form>
+                -->
+                <ui:include src="pageFragments/companyForm.xhtml"></ui:include>
+                <ui:include src="pageFragments/userForm.xhtml"></ui:include>
 
+            </p:layoutUnit>
+            <p:layoutUnit position="south">
+                <p:dock position="top">
+                    <p:menuitem value="Company" icon="/resources/icons/Organization.png" url="index.xhtml"/>
+                    
+                    <!-- more menuitems -->
+                </p:dock>
             </p:layoutUnit>
 
         </h:body>

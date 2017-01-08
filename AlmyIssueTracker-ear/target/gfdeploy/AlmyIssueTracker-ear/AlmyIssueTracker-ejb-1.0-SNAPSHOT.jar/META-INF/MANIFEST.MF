@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Archiver-Version: Plexus Archiver
-Built-By: iva.bilandzic
-Class-Path: lib/validation-api-1.1.0.Final.jar lib/ejb-api-3.0.jar
-Created-By: Apache Maven
-Build-Jdk: 1.8.0_73
-

@@ -5,6 +5,7 @@
  */
 package hr.codiraona.dao;
 
+
 import hr.codiraona.model.User;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,10 +30,11 @@ public class AuthDAO implements AuthDAOLocal {
     public User login(String username, String password) {
         User currentUser = null;
         try {
+            log.log(Level.INFO,username);
             TypedQuery<User> query = em.createNamedQuery("User.findByCredentials", User.class);
             query.setParameter("inUsername", username);
             query.setParameter("inPassword", password);
-            currentUser = query.getSingleResult();
+            currentUser = query.getResultList().get(0);
         } catch (Exception e) {
             log.log(Level.WARNING, "Problem authenticating user");
             log.log(Level.WARNING, e.getMessage());

@@ -49,6 +49,8 @@ public class CompanyDAO implements CompanyDAOLocal, Serializable {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            log.log(Level.SEVERE, String.format("Company: %s not updated", company.getName()));
+            log.log(Level.SEVERE, e.getMessage());
             return false;
         }
     }

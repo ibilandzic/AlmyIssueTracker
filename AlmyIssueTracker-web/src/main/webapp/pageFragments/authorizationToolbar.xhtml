@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:component id="autorizationComponent">
+        
+           
+
+                <h:commandButton value="Login" onclick="PF('loginDlg').show();" title="login" rendered="#{not authBackingBean.isRegistered}" />
+                <h:outputText value="Trenutni korisnik: #{authBackingBean.username} " rendered="#{authBackingBean.isRegistered}"/>
+                <p:commandButton  id="logoutBtn" value="Logout" rendered="#{authBackingBean.isRegistered}" action="#{authBackingBean.logout()}"/>
+                <h:form id="loginForm">
+                    <p:dialog header="Login" widgetVar="loginDlg" resizable="false">
+                        <h:panelGrid columns="2" cellpadding="5">
+                            <h:outputLabel for="username" value="Username:" />
+                            <p:inputText id="username" value="#{authBackingBean.username}" required="true" label="username" />
+
+                            <h:outputLabel for="password" value="Password:" />
+                            <p:password id="password" value="#{authBackingBean.password}" required="true" label="password" />
+
+                            <f:facet name="footer">
+                                <p:commandButton value="Login" update="@all" action="#{authBackingBean.login()}"
+                                                 oncomplete="PF('loginDlg').hide();"/>
+                            </f:facet>  
+                        </h:panelGrid>
+                    </p:dialog>
+
+                </h:form>
+
+
+            
+        
+    </ui:component>
+</html>
+

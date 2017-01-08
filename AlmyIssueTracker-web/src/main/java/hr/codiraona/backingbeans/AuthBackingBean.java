@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -23,19 +24,18 @@ import javax.ejb.EJB;
 @Named(value = "authBackingBean")
 @SessionScoped
 public class AuthBackingBean implements Serializable {
+
     private Logger log = Logger.getLogger(this.getClass().getName());
     @EJB
     private AuthDAOLocal authDao;
-    
+
     @EJB
     private UserDAOLocal userDao;
-    
-    private User currentUser = null;
-    
 
-    
-    private String username="";
-    private String password="";
+    private User currentUser = null;
+
+    private String username;
+    private String password;
 
     public String getUsername() {
         return username;
@@ -52,8 +52,8 @@ public class AuthBackingBean implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-    private boolean isRegistered =  false;
+
+    private boolean isRegistered = false;
 
     public boolean isIsRegistered() {
         return isRegistered;
@@ -66,69 +66,66 @@ public class AuthBackingBean implements Serializable {
     public User getCurrentUser() {
         return currentUser;
     }
-    
-    public void setCurrentUser(User user){
+
+    public void setCurrentUser(User user) {
         currentUser = user;
     }
-    
-    
+
     public AuthBackingBean() {
     }
-    
+
     @PostConstruct
-    public void init(){
-        username="";
-        password="";
+    public void init() {
+
         currentUser = new User();
     }
-    
-    public void login(){
-        log.log(Level.INFO,"Loggining in...");
+
+    public void login() {
+        log.log(Level.INFO, "Loggining in...");
+        log.log(Level.INFO, "Inputs: username " + getUsername());
         User user = authDao.login(getUsername(), getPassword());
         setPassword("");
-        if (user!=null){
-            log.log(Level.INFO,"User fetched");
-            setCurrentUser(user); 
+        if (user != null) {
+            log.log(Level.INFO, "User fetched");
+            setCurrentUser(user);
             setIsRegistered(true);
-        }
-        else{
+            refreshPage();
+        } else {
             setCurrentUser(null);
             setIsRegistered(false);
         }
     }
-    
-    public boolean isAdmin(){
+
+    private void refreshPage() {
+        RequestContext.getCurrentInstance().update("authToolbar");
+        RequestContext.getCurrentInstance().update("dataUnit");
+    }
+
+    public boolean isAdmin() {
         return isInRole("admin");
     }
-    
-    public boolean isEmployee(){
+
+    public boolean isEmployee() {
         return isInRole("employee");
     }
-    
-    public boolean isRegularUser(){
+
+    public boolean isRegularUser() {
         return isInRole("user");
     }
-    
-    private boolean isInRole(String roleName){
-        if (isRegistered){
+
+    private boolean isInRole(String roleName) {
+        if (isRegistered) {
             return currentUser.getRole().getName().equals(roleName);
-        }
-        else{
+        } else {
             return false;
         }
     }
-    
-    public void logout(){
+
+    public void logout() {
         setCurrentUser(null);
         setUsername("");
         setPassword("");
         setIsRegistered(false);
     }
-    
 
-    
-    
-    
-    
-    
 }

@@ -53,19 +53,15 @@ public class UserDAO implements UserDAOLocal {
     }
 
     @Override
-    public boolean updateUser(UserDTO userDTO) {
+    public boolean updateUser(User user) {
         boolean isUpdated = false;
         try {
-            User user = em.find(User.class, userDTO.getId());
-            if (user != null) {
-                setUserValues(user, userDTO);
-                em.merge(user);
-                isUpdated = true;
-            }
-            return isUpdated;
-
+            em.merge(user);
+            log.log(Level.INFO,String.format("User: %s successfully updated", user.getUsername()));
+            return true;
         } catch (Exception e) {
-            e.getMessage();
+            log.log(Level.SEVERE,String.format("User: %s not updated",user.getUsername()));
+            log.log(Level.SEVERE, e.getMessage());
             return false;
         }
     }

@@ -22,7 +22,7 @@ public interface UserDAOLocal {
     
     public boolean createUser(User user);
     
-    public boolean updateUser(UserDTO userDTO);
+    public boolean updateUser(User user);
     
     public boolean setPassword(String password, int user_id);
     
