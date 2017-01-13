@@ -6,8 +6,9 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <ui:component id="companyFormFragment">
-        <h:form id="companyForm">
-            <h1><h:outputText value="Popis tvrtki"/></h1>
+
+
+            <h3><h:outputText value="Popis tvrtki"/></h3>
             <p:dataTable value="#{companyBackingBean.companies}" 
                          var="item" 
                          id="companyTable" 
@@ -17,12 +18,9 @@
                          rowKey="#{item.id}"
                          editable="true"
                          editMode="row"
-                         stickyHeader="true"
-                         
-
                          >
-                <p:ajax event="rowSelect" update=":userForm:userTable"/>
-                <p:ajax event="rowEdit" listener="#{companyBackingBean.editCompany()}" update=":companyForm:companyTable"/>
+                <p:ajax event="rowSelect" update=":#{p:component('userTable')}" />
+                <p:ajax event="rowEdit" listener="#{companyBackingBean.editCompany()}" update=":#{p:component('companyTable')}"/>
                 <p:column sortBy="#{item.id}" filterBy="#{item.id}" filterMatchMode="contains">
                     <f:facet name="header">
                         <h:outputText value="Id"/>
@@ -87,16 +85,18 @@
                 <p:column style="width:32px">
                     <p:rowEditor />
                 </p:column>
+            <f:facet name="footer">
+                <p:commandButton id="createCompanyBtn" onclick="PF('companyDlg').show()" value="Dodaj" update=":#{p:component('companyTable')}"/>
+                <!-- delete command button -->
+                <p:commandButton id="deleteCompanyBtn"  value="Obriši" action="#{companyBackingBean.deleteCompany()}" update=":#{p:component('companyTable')}"/>
 
+            </f:facet>
             </p:dataTable>
 
-            <p:commandButton id="createCompanyBtn" onclick="PF('companyDlg').show()" value="Dodaj"/>
-            <!-- delete command button -->
-            <p:commandButton id="deleteCompanyBtn"  value="Obriši" action="#{companyBackingBean.deleteCompany()}"/>
 
             <!-- new company dialog -->
             <p:dialog header="Kreiraj novu tvrtku" widgetVar="companyDlg" minHeight="40" visible="false" id="companyDlg">
-                <p:outputPanel id="newCompanyForm">
+
                     <h:panelGrid columns="2">
                         <h:outputLabel value="Ime:" for="name" />
                         <h:inputText id="name" value="#{companyBackingBean.company.name}" title="Name" />
@@ -106,17 +106,18 @@
                         <h:inputText id="city" value="#{companyBackingBean.company.city}" title="City" />
                         <h:outputLabel value="Država:" for="country" />
                         <h:inputText id="country" value="#{companyBackingBean.company.country}" title="Country" />
-                        
+
                     </h:panelGrid>
                     <p:commandButton id="submitCompany"  
                                      action="#{companyBackingBean.createCompany()}"
-                                     title="Spremi" oncomplete="companyDlg.hide()"
-                                     value="Spremi" update="@all"
+                                     title="Spremi" oncomplete="PF('companyDlg').hide()"
+                                     value="Spremi" update=":#{p:component('companyTable')}"
                                      onsuccess=""
                                      />
-                </p:outputPanel>
+
             </p:dialog>
-        </h:form>
-        </ui:component>
-            </html>
+        
+
+    </ui:component>
+</html>
 

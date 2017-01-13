@@ -16,4 +16,5 @@ import javax.ejb.Local;
 @Local
 public interface RoleDAOLocal {
     List<Role> getAllRoles();
+    Role getRoleByName(String inName);
 }

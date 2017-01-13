@@ -20,24 +20,41 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class RoleDAO implements RoleDAOLocal {
 
-     @PersistenceContext(unitName = "AlmyIssueTracker")
+    @PersistenceContext(unitName = "AlmyIssueTracker")
     private EntityManager em;
-    
-     Logger log = Logger.getLogger(this.getClass().getName());
+
+    Logger log = Logger.getLogger(this.getClass().getName());
+
     @Override
     public List<Role> getAllRoles() {
-    
-      try{
-        return em.createNamedQuery("Role.findAll", Role.class).getResultList();
-      }  
-      catch(Exception e){
-          log.log(Level.WARNING, "No roles find");
-          log.log(Level.SEVERE,e.getMessage());
-          return null;
-      }
-    
+
+        try {
+            return em.createNamedQuery("Role.findAll", Role.class).getResultList();
+        } catch (Exception e) {
+            log.log(Level.WARNING, "No roles find");
+            log.log(Level.SEVERE, e.getMessage());
+            return null;
+        }
+
     }
+    
+   
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+
+    @Override
+    public Role getRoleByName(String inName) {
+        try{
+            log.log(Level.INFO,"Fetching role by name "+inName);
+            return em.createNamedQuery("Role.findByName", Role.class)
+                    .setParameter("inName", inName)
+                    .getSingleResult();
+            
+        }
+        catch(Exception e){
+            log.log(Level.SEVERE,"Error occured while fetching role");
+            return null;
+        }
+    }
 }

@@ -6,6 +6,7 @@
 package hr.codiraona.dao;
 
 import hr.codiraona.dto.UserDTO;
+import hr.codiraona.model.Role;
 import hr.codiraona.model.Ticket;
 import hr.codiraona.model.User;
 import java.util.List;
@@ -31,6 +32,8 @@ public interface UserDAOLocal {
     public List<Ticket> getTicketsAssignedByUser(String username);
     
     public boolean removeUser(int id);
+    
+    List<User> getUsersByRole(String inRoleName);
     
     
 }

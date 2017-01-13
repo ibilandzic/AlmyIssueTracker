@@ -1,149 +1,189 @@
 package hr.codiraona.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import javax.persistence.*;
 import java.util.List;
 
-
 /**
  * The persistent class for the TICKET database table.
- * 
+ *
  */
 @Entity
-@Table(name="TICKET", schema="TICKETING")
+@Table(name = "TICKET", schema = "TICKETING")
 @NamedQueries({
-	@NamedQuery(name="Ticket.findAll", query="SELECT t FROM Ticket t"),
-	@NamedQuery(name="Ticket.findByReporter", query="SELECT t FROM Ticket t where t.reportedBy =:inUsername"),
-	@NamedQuery(name="Ticket.findByAssignee", query="SELECT t FROM Ticket t where t.assignedTo =:inUsername")
+    @NamedQuery(name = "Ticket.findAll", query = "SELECT t FROM Ticket t ORDER BY t.priorityNum,t.createdAt ASC")
+    ,
+	@NamedQuery(name = "Ticket.findByReporter", query = "SELECT t FROM Ticket t where t.reportedBy =:inUsername ORDER BY t.priorityNum, t.createdAt ASC")
+    ,
+	@NamedQuery(name = "Ticket.findByAssignee", query = "SELECT t FROM Ticket t where t.assignedTo =:inUsername ORDER BY t.priorityNum, t.createdAt ASC"),
+        
+        @NamedQuery(name="Ticket.findTicketByStatus", query="SELECT t from Ticket t where t.status=:inStatus ORDER BY t.priorityNum, t.createdAt ASC")
 })
 
 public class Ticket implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+    private static final long serialVersionUID = 1L;
 
-	@Column(name="ASSIGNED_TO")
-	private String assignedTo;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	private String category;
+    @Column(name = "ASSIGNED_TO")
+    private String assignedTo;
 
-	private String description;
+    private String category;
 
-	private String priority;
+    private String description;
 
-	@Column(name="REPORTED_BY")
-	private String reportedBy;
+    private String priority;
 
-	private String status;
+    @Column(name="PRIORITY_NUM")
+    private int priorityNum;
 
-	private String title;
+    @Column(name = "REPORTED_BY")
+    private String reportedBy;
 
-	//bi-directional many-to-one association to Location
-	@ManyToOne
-	@JoinColumn(name="LOCATION_ID")
-	private Location location;
+    private String status;
 
-	//bi-directional many-to-one association to Message
-	@OneToMany(mappedBy="ticket")
-	private List<Message> messages;
+    private String title;
 
-	public Ticket() {
-	}
+    //bi-directional many-to-one association to Location
+    @ManyToOne
+    @JoinColumn(name = "LOCATION_ID")
+    private Location location;
 
-	public int getId() {
-		return this.id;
-	}
+    //bi-directional many-to-one association to Message
+    @OneToMany(mappedBy = "ticket")
+    private List<Message> messages;
+    
+    @Column(name="CREATED_AT")
+    private Timestamp createdAt;
+    
+    @Column(name="CLOSED_AT")
+    private Timestamp closedAt;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public Timestamp getClosedAt() {
+        return closedAt;
+    }
 
-	public String getAssignedTo() {
-		return this.assignedTo;
-	}
+    public void setClosedAt(Timestamp closedAt) {
+        this.closedAt = closedAt;
+    }
 
-	public void setAssignedTo(String assignedTo) {
-		this.assignedTo = assignedTo;
-	}
+    public Timestamp getCreatedAt() {
+        return createdAt;
+    }
 
-	public String getCategory() {
-		return this.category;
-	}
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
+    }
 
-	public void setCategory(String category) {
-		this.category = category;
-	}
+    /**
+     * Constructor
+     */
+    public Ticket() {
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getPriority() {
-		return this.priority;
-	}
+    public String getAssignedTo() {
+        return this.assignedTo;
+    }
 
-	public void setPriority(String priority) {
-		this.priority = priority;
-	}
+    public void setAssignedTo(String assignedTo) {
+        this.assignedTo = assignedTo;
+    }
 
-	public String getReportedBy() {
-		return this.reportedBy;
-	}
+    public String getCategory() {
+        return this.category;
+    }
 
-	public void setReportedBy(String reportedBy) {
-		this.reportedBy = reportedBy;
-	}
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-	public String getStatus() {
-		return this.status;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public String getTitle() {
-		return this.title;
-	}
+    public String getPriority() {
+        return this.priority;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
 
-	public Location getLocation() {
-		return this.location;
-	}
+    public String getReportedBy() {
+        return this.reportedBy;
+    }
 
-	public void setLocation(Location location) {
-		this.location = location;
-	}
+    public void setReportedBy(String reportedBy) {
+        this.reportedBy = reportedBy;
+    }
 
-	public List<Message> getMessages() {
-		return this.messages;
-	}
+    public String getStatus() {
+        return this.status;
+    }
 
-	public void setMessages(List<Message> messages) {
-		this.messages = messages;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public Message addMessage(Message message) {
-		getMessages().add(message);
-		message.setTicket(this);
+    public String getTitle() {
+        return this.title;
+    }
 
-		return message;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public Message removeMessage(Message message) {
-		getMessages().remove(message);
-		message.setTicket(null);
+    public Location getLocation() {
+        return this.location;
+    }
 
-		return message;
-	}
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 
+    public List<Message> getMessages() {
+        return this.messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public Message addMessage(Message message) {
+        getMessages().add(message);
+        message.setTicket(this);
+
+        return message;
+    }
+
+    public Message removeMessage(Message message) {
+        getMessages().remove(message);
+        message.setTicket(null);
+
+        return message;
+    }
+
+    public int getPriorityNum() {
+        return priorityNum;
+    }
+
+    public void setPriorityNum(int priorityNum) {
+        this.priorityNum = priorityNum;
+    }
 }

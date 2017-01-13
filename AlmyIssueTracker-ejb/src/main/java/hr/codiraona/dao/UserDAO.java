@@ -7,11 +7,13 @@ package hr.codiraona.dao;
 
 import hr.codiraona.dto.UserDTO;
 import hr.codiraona.model.Message;
+import hr.codiraona.model.Role;
 import hr.codiraona.model.Ticket;
 import hr.codiraona.model.User;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,6 +30,10 @@ public class UserDAO implements UserDAOLocal {
 
     @PersistenceContext(unitName = "AlmyIssueTracker")
     private EntityManager em;
+    
+    @EJB
+    private RoleDAOLocal roleDao;
+    
 
     @Override
     public List<User> getAllUsers() {
@@ -185,6 +191,14 @@ public class UserDAO implements UserDAOLocal {
             e.getMessage();
             return false;
         }
+    }
+
+    @Override
+    public List<User> getUsersByRole(String inRoleName) {
+        Role role = roleDao.getRoleByName(inRoleName);
+        return em.createNamedQuery("User.findByRole", User.class)
+                .setParameter("inRole", role)
+                .getResultList();
     }
 
 }

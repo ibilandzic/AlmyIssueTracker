@@ -6,173 +6,188 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui">
     <ui:component id="userFormFragment">
-        <h:form id="userForm">
-            <h1><h:outputText value="Popis korisnika"/></h1>
-            <p:dataTable value="#{companyBackingBean.selectedCompany.users}" 
-                         var="item" 
-                         id="userTable" 
-                         widgetVar="userTable"
-                         selectionMode="single"
-                         selection="#{companyBackingBean.selectedUser}"
-                         lazy="false"
-                         rowKey="#{item.id}"
-                         editable="true"
-                         editMode="row"
-                         emptyMessage="Korisnici nisu pronađeni"
-                         >
-                <p:ajax event="rowSelect" />
-                <p:ajax event="rowEdit" listener="#{companyBackingBean.editUser()}" update=":userForm:userTable"/>
-                <p:column sortBy="#{item.id}" filterBy="#{item.id}" filterMatchMode="contains">
-                    <f:facet name="header">
-                        <h:outputText value="Id"/>
+
+
+        <p:panelGrid columns="1">
+
+                
+                <h3><h:outputText value="Popis korisnika u tvrtki: #{companyBackingBean.selectedCompany.name}"/></h3>
+
+                <p:dataTable value="#{companyBackingBean.users}" 
+                             var="item"
+                             id="userTable"
+                             widgetVar="userTable"
+                             selectionMode="single"
+                             selection="#{companyBackingBean.selectedUser}"
+                             lazy="false"
+                             rowKey="#{item.id}"
+                             editable="true"
+                             editMode="row"
+                             emptyMessage="Korisnici nisu pronađeni"
+                             scrollable="false"
+                             tableStyle="width:auto"
+                             >
+                    <p:ajax event="rowSelect" />
+                    <p:ajax event="rowEdit" listener="#{companyBackingBean.editUser()}" update=":#{p:component('userTable')}"/>
+                    <!-- not allowed to change -->
+                    <p:column sortBy="#{item.id}" filterBy="#{item.id}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Id"/>
+                        </f:facet>
+                        <h:outputText value="#{item.id}"/>
+                    </p:column>
+                    <p:column sortBy="#{item.username}" filterBy="#{item.username}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Korisničko ime"/>
+                        </f:facet>
+                        <h:outputText value="#{item.username}"/>
+                    </p:column>
+                    <p:column sortBy="#{item.firstName}" filterBy="#{item.firstName}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Ime"/>
+                        </f:facet>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.firstName}"/> 
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.firstName}" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column sortBy="#{item.lastName}" filterBy="#{item.lastName}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Prezime"/>
+                        </f:facet>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.lastName}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.lastName}" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column sortBy="#{item.email}" filterBy="#{item.email}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Email"/>
+                        </f:facet>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.email}"/> 
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.email}" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column sortBy="#{item.mobileNumber}" filterBy="#{item.mobileNumber}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Broj mobitela"/>
+                        </f:facet>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.mobileNumber}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.mobileNumber}" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column sortBy="#{item.phoneNumber}" filterBy="#{item.phoneNumber}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Broj telefona"/>
+                        </f:facet>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.phoneNumber}"/>
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.phoneNumber}" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column sortBy="#{item.password}" filterBy="#{item.password}" filterMatchMode="contains">
+                        <f:facet name="header">
+                            <h:outputText value="Lozinka"/>
+                        </f:facet>
+                        <p:cellEditor>
+                            <f:facet name="output">
+                                <h:outputText value="**********" />
+                            </f:facet>
+                            <f:facet name="input">
+                                <p:inputText value="#{item.password}" />
+                            </f:facet>
+                        </p:cellEditor>
+                    </p:column>
+                    <p:column sortBy="#{item.role}" headerText="Pravo pristupa" filterBy="#{item.role.name}" filterMatchMode="exact">
+
+                        <f:facet name="filter">
+                            <p:selectOneMenu onchange="PF('userTable').filter()" >
+                                <!--
+                                <f:selectItem itemLabel="Odaberite..." itemValue="#{null}" noSelectionOption="true" />
+                                -->
+                                <f:selectItems value="#{companyBackingBean.roles}" var="rol" itemLabel="#{rol.name}"/>
+                            </p:selectOneMenu>
+                        </f:facet>
+                            <f:facet name="output">
+                                <h:outputText value="#{item.role.name}"/>
+                            </f:facet>
+
+                    </p:column>
+                    <p:column style="width:32px">
+                        <p:rowEditor />
+                    </p:column>
+
+                    <f:facet name="footer">
+                        <p:commandButton id="createUserBtn" onclick="PF('userDlg').show()" value="Dodaj"/>
+                        <!-- delete command button -->
+                        <p:commandButton id="deleteUserBtn"  value="Obriši" action="#{companyBackingBean.deleteUser()}"/>
                     </f:facet>
-                    <h:outputText value="#{item.id}"/>
-                </p:column>
-                <p:column sortBy="#{item.username}" filterBy="#{item.username}" filterMatchMode="contains">
-                    <f:facet name="header">
-                        <h:outputText value="Korisničko ime"/>
-                    </f:facet>
-                    <p:cellEditor>
-                        <f:facet name="output">
-                            <h:outputText value="#{item.username}"/>
-                        </f:facet>
-                    </p:cellEditor>
+                </p:dataTable>
 
-                </p:column>
-                <p:column sortBy="#{item.firstName}" filterBy="#{item.firstName}" filterMatchMode="contains">
-                    <f:facet name="header">
-                        <h:outputText value="Ime"/>
-                    </f:facet>
-                    <p:cellEditor>
-                        <f:facet name="output">
-                            <h:outputText value="#{item.firstName}"/> 
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:inputText value="#{item.firstName}" />
-                        </f:facet>
-                    </p:cellEditor>
+                <!-- command button for creation and deletion of users in specific company -->
 
-                </p:column>
-                <p:column sortBy="#{item.lastName}" filterBy="#{item.lastName}" filterMatchMode="contains">
-                    <f:facet name="header">
-                        <h:outputText value="Prezime"/>
-                    </f:facet>
-                    <p:cellEditor>
-                        <f:facet name="output">
-                            <h:outputText value="#{item.lastName}"/>
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:inputText value="#{item.lastName}" />
-                        </f:facet>
-                    </p:cellEditor>
+                <!-- new company dialog -->
+                <!-- new company dialog -->
 
-                </p:column>
-                <p:column sortBy="#{item.email}" filterBy="#{item.email}" filterMatchMode="contains">
-                    <f:facet name="header">
-                        <h:outputText value="Email"/>
-                    </f:facet>
-                    <p:cellEditor>
-                        <f:facet name="output">
-                            <h:outputText value="#{item.email}"/>
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:inputText value="#{item.email}" />
-                        </f:facet>
-                    </p:cellEditor>
-                </p:column>
-                <p:column sortBy="#{item.phoneNumber}" filterBy="#{item.phoneNumber}" filterMatchMode="contains">
-                    <f:facet name="header">
-                        <h:outputText value="Broj telefona"/>
-                    </f:facet>
-                    <p:cellEditor>
-                        <f:facet name="output">
-                            <h:outputText value="#{item.phoneNumber}"/>
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:inputText value="#{item.phoneNumber}" />
-                        </f:facet>
-                    </p:cellEditor>
-                </p:column>
-                <p:column sortBy="#{item.mobileNumber}" filterBy="#{item.mobileNumber}" filterMatchMode="contains">
-                    <f:facet name="header">
-                        <h:outputText value="Broj mobitela"/>
-                    </f:facet>
-                    <p:cellEditor>
-                        <f:facet name="output">
-                            <h:outputText value="#{item.mobileNumber}"/>
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:inputText value="#{item.mobileNumber}" />
-                        </f:facet>
-                    </p:cellEditor>
-                </p:column>
 
-                <p:column sortBy="#{item.password}" filterBy="#{item.password}" filterMatchMode="contains">
-                    <f:facet name="header">
-                        <h:outputText value="Lozinka"/>
-                    </f:facet>
-                    <p:cellEditor>
-                        <f:facet name="output">
-                            <p:password value="#{item.password}" />
-                        </f:facet>
-                        <f:facet name="input">
-                            <p:inputText value="#{item.password}" />
-                        </f:facet>
-                    </p:cellEditor>
-                </p:column>
-                <p:column sortBy="#{item.role}" headerText="Pravo pristupa" filterBy="#{item.role.name}" filterMatchMode="exact">
+                <p:dialog header="Kreiraj novog korisnika" widgetVar="userDlg" minHeight="40" visible="false" id="userDlg">
+                    <p:outputPanel>
+                        <h:panelGrid columns="2">
 
-                    <f:facet name="filter">
-                        <p:selectOneMenu onchange="PF('userTable').filter()" >
-                            <f:selectItem itemLabel="Odaberite..." itemValue="#{null}" noSelectionOption="true" />
-                            <f:selectItems value="#{companyBackingBean.roles}" />
-                        </p:selectOneMenu>
-                    </f:facet>
+                            <h:outputLabel value="Ime:" for="firstName" />
+                            <h:inputText id="firstName" value="#{companyBackingBean.user.firstName}" title="FirstName" />
+                            <h:outputLabel value="Prezime:" for="lastName" />
+                            <h:inputText id="lastName" value="#{companyBackingBean.user.lastName}" title="LastName" />
+                            <h:outputLabel value="Email:" for="email" />
+                            <h:inputText id="email" value="#{companyBackingBean.user.email}" title="Email" />
+                            <h:outputLabel value="Broj mobitela:" for="mobileNumber" />
+                            <h:inputText id="mobileNumber" value="#{companyBackingBean.user.mobileNumber}" title="MobileNumber" />
+                            <h:outputLabel value="Lozinka:" for="password" />
+                            <p:password id="password" value="#{companyBackingBean.user.password}" title="Password" />
+                            <h:outputLabel value="Broj telefona:" for="phoneNumber" />
+                            <h:inputText id="phoneNumber" value="#{companyBackingBean.user.phoneNumber}" title="PhoneNumber" />
 
-                    <p:cellEditor>
-                        <f:facet name="output">
-                            <h:outputText value="#{item.role.name}"/>
-                        </f:facet>
-               <f:facet name="input">
-                   <h:selectOneMenu value="#{item.role}" style="width:100%">
-                       <f:selectItems value="#{companyBackingBean.roles}" var="rol" itemLabel="#{rol.name}" itemValue="#{rol}" />
-                   </h:selectOneMenu>
-               </f:facet>
-                    </p:cellEditor>
-                </p:column>
-                <p:column style="width:32px">
-                    <p:rowEditor />
-                </p:column>
+                            <h:outputLabel value="Korisničko ime:" for="username" />
+                            <h:inputText id="username" value="#{companyBackingBean.user.username}" title="Username" />
+                            <h:outputLabel value="Razina pristupa:" for="role" />
+                            <h:selectOneMenu id="role" value="#{companyBackingBean.user.role}" title="Role" >
+                                <!-- TODO: update below reference to list of available items-->
+                                <f:selectItems value="#{companyBackingBean.roles}" var="rol" itemLabel="#{rol.name}" itemValue="#{rol}" />
+                            </h:selectOneMenu>
 
-            </p:dataTable>
+                        </h:panelGrid>
+                        <p:commandButton id="submitUser"  
+                                         action="#{companyBackingBean.createUser}"
+                                         title="Spremi" oncomplete="PF('userDlg').hide()"
+                                         value="Spremi"
+                                         update=":#{p:component('companyTable')} :#{p:component('userTable')}"
+                                         />
 
-            <p:commandButton id="createUserBtn" onclick="PF('userDlg').show()" value="Dodaj"/>
-            <!-- delete command button -->
-            <p:commandButton id="deleteUserBtn"  value="Obriši" action="#{companyBackingBean.deleteUser()}"/>
-
-            <!-- new company dialog -->
-            <p:dialog header="Kreiraj novog korisnika" widgetVar="userDlg" minHeight="40" visible="false" id="userDlg">
-                <p:outputPanel id="newUserForm">
-                    <h:panelGrid columns="2">
-                        <h:outputLabel value="Ime:" for="name" />
-                        <h:inputText id="name" value="#{companyBackingBean.user.firstName}" title="Name" />
-                        <h:outputLabel value="Prezime:" for="surname" />
-                        <h:inputText id="surname" title="Surname" value="#{companyBackingBean.user.lastName}" />
-                        <h:outputLabel value="Grad:" for="city" />
-                        <h:inputText id="city" value="#{companyBackingBean.company.city}" title="City" />
-                        <h:outputLabel value="Država:" for="country" />
-                        <h:inputText id="country" value="#{companyBackingBean.company.country}" title="Country" />
-
-                    </h:panelGrid>
-                    <p:commandButton id="submitCompany"  
-                                     action="#{companyBackingBean.createCompany()}"
-                                     title="Spremi" oncomplete="companyDlg.hide()"
-                                     value="Spremi" update="@all"
-                                     onsuccess=""
-                                     />
-                </p:outputPanel>
-            </p:dialog>
-        </h:form>
+                    </p:outputPanel>
+                </p:dialog>
+        </p:panelGrid>
     </ui:component>
 
 </html>

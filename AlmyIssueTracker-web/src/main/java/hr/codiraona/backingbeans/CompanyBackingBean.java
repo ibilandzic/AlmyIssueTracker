@@ -18,15 +18,19 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
-import javax.enterprise.context.RequestScoped;
-import org.primefaces.component.dialog.Dialog;
+
+import javax.faces.bean.ManagedBean;
+
+import javax.faces.bean.ViewScoped;
+
 
 /**
  *
  * @author iva.bilandzic
  */
+@ManagedBean
 @Named(value = "companyBackingBean")
-@RequestScoped
+@ViewScoped
 public class CompanyBackingBean implements Serializable {
 
     private Logger log = Logger.getLogger(this.getClass().getName());
@@ -39,12 +43,23 @@ public class CompanyBackingBean implements Serializable {
 
     @EJB
     RoleDAOLocal roleDao;
+    
 
     private List<Company> companies;
 
     private Company company;
 
     private Company selectedCompany;
+
+    private List<User> users;
+
+    public List<User> getUsers() {
+        return selectedCompany.getUsers();
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
 
     private User user;
 
@@ -54,7 +69,8 @@ public class CompanyBackingBean implements Serializable {
 
     /**
      * get user form data
-     * @return 
+     *
+     * @return
      */
     public User getUser() {
         return user;
@@ -62,7 +78,8 @@ public class CompanyBackingBean implements Serializable {
 
     /**
      * set user form data
-     * @param user 
+     *
+     * @param user
      */
     public void setUser(User user) {
         this.user = user;
@@ -70,7 +87,8 @@ public class CompanyBackingBean implements Serializable {
 
     /**
      * get all rols
-     * @return 
+     *
+     * @return
      */
     public List<Role> getRoles() {
         return roles;
@@ -78,7 +96,8 @@ public class CompanyBackingBean implements Serializable {
 
     /**
      * set all roles
-     * @param roles 
+     *
+     * @param roles
      */
     public void setRoles(List<Role> roles) {
         this.roles = roles;
@@ -120,15 +139,7 @@ public class CompanyBackingBean implements Serializable {
         this.selectedCompany = selectedCompany;
     }
 
-    private Dialog newCompanyDialog;
 
-    public Dialog getNewCompanyDialog() {
-        return newCompanyDialog;
-    }
-
-    public void setNewCompanyDialog(Dialog newCompanyDialog) {
-        this.newCompanyDialog = newCompanyDialog;
-    }
 
     /**
      * return list of all companies
@@ -143,12 +154,24 @@ public class CompanyBackingBean implements Serializable {
 
     }
 
+    /**
+     * Sets list of all available companies
+     * Sets first company as selected
+     * Fetched all users in selected company
+     * Fetches all available roles
+     * Inializes company object for form
+     * Initializes user object for form
+     * 
+     */
     @PostConstruct
     public void init() {
         log.log(Level.INFO, "EJB is:" + companyDao);
         companies = companyDao.getAllCompanies();
+        selectedCompany = companies.get(0);
+        users = selectedCompany.getUsers();
         roles = roleDao.getAllRoles();
         initCompany();
+        initUser();
 
     }
 
@@ -157,6 +180,10 @@ public class CompanyBackingBean implements Serializable {
      */
     private void initCompany() {
         company = new Company();
+    }
+    
+    private void initUser(){
+        user = new User();
     }
 
     /**
@@ -242,17 +269,20 @@ public class CompanyBackingBean implements Serializable {
 
     }
 
-    public void createUser() {
-        log.log(Level.INFO,"Creating new user: "+user.getUsername());
-        
-        if (userDao.createUser(user)){
-            log.log(Level.INFO, "User "+user.getUsername()+" successfully created");
-            log.log(Level.INFO,"Fetching data");
+    public String createUser() {
+         log.log(Level.INFO, "Creating new user: " + user.getUsername());
+        log.log(Level.INFO, "Creating new user: " + user.getRole().getName());
+
+        user.setCompany(selectedCompany);
+        if (userDao.createUser(user)) {
+            log.log(Level.INFO, "User " + user.getUsername() + " successfully created");
+            log.log(Level.INFO, "Fetching data");
             companies = companyDao.getAllCompanies();
+        } else {
+            log.log(Level.WARNING, "User not created");
         }
-        else{
-            log.log(Level.WARNING,"User not created");
-        }
+        
+        return "done";
     }
 
 }

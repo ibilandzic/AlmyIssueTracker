@@ -1,2 +1,4 @@
-hr/codiraona/backingbeans/AuthBackingBean.class
-hr/codiraona/backingbeans/CompanyBackingBean.class
+hr\codiraona\backingbeans\GeneralAdminBackingBean.class
+hr\codiraona\backingbeans\TicketsManagedBean.class
+hr\codiraona\backingbeans\CompanyBackingBean.class
+hr\codiraona\backingbeans\AuthBackingBean.class

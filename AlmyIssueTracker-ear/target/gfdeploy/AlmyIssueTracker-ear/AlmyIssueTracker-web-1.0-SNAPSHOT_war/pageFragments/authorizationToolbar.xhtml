@@ -13,14 +13,16 @@
                 <h:commandButton value="Login" onclick="PF('loginDlg').show();" title="login" rendered="#{not authBackingBean.isRegistered}" />
                 <h:outputText value="Trenutni korisnik: #{authBackingBean.username} " rendered="#{authBackingBean.isRegistered}"/>
                 <p:commandButton  id="logoutBtn" value="Logout" rendered="#{authBackingBean.isRegistered}" action="#{authBackingBean.logout()}"/>
+                
                 <h:form id="loginForm">
+                
                     <p:dialog header="Login" widgetVar="loginDlg" resizable="false">
                         <h:panelGrid columns="2" cellpadding="5">
-                            <h:outputLabel for="username" value="Username:" />
-                            <p:inputText id="username" value="#{authBackingBean.username}" required="true" label="username" />
+                            <h:outputLabel for="username" value="Korisničko ime:" />
+                            <p:inputText id="in_username" value="#{authBackingBean.username}" required="true" label="username" />
 
-                            <h:outputLabel for="password" value="Password:" />
-                            <p:password id="password" value="#{authBackingBean.password}" required="true" label="password" />
+                            <h:outputLabel for="password" value="Lozinka:" />
+                            <p:password id="in_password" value="#{authBackingBean.password}" required="true" label="password" />
 
                             <f:facet name="footer">
                                 <p:commandButton value="Login" update="@all" action="#{authBackingBean.login()}"
@@ -28,9 +30,7 @@
                             </f:facet>  
                         </h:panelGrid>
                     </p:dialog>
-
                 </h:form>
-
 
             
         

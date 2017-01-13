@@ -19,7 +19,8 @@ import java.sql.Timestamp;
 	@NamedQuery(name="User.findByCredentials", query="SELECT u from User u where "
 			+ "u.username=:inUsername and u.password=:inPassword"),
 	@NamedQuery(name="User.findById", query="SELECT u from User u where u.id=:inId"),
-	@NamedQuery(name="User.findByUsername", query="SELECT u from User u where u.username=:inUsername")
+	@NamedQuery(name="User.findByUsername", query="SELECT u from User u where u.username=:inUsername"),
+        @NamedQuery(name="User.findByRole", query="SELECT u from User u where u.role=:inRole")
 })
 @NamedQuery(name="User.findAll", query="SELECT u FROM User u")
 public class User implements Serializable {
