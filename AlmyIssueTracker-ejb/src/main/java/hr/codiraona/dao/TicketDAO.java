@@ -5,7 +5,7 @@
  */
 package hr.codiraona.dao;
 
-import hr.codiraona.model.Message;
+import hr.codiraona.model.Messages;
 import hr.codiraona.model.Ticket;
 import hr.codiraona.util.Constants;
 import java.sql.Timestamp;
@@ -38,8 +38,15 @@ public class TicketDAO implements TicketDAOLocal{
     @Override
     public List<Ticket> getAllOpenedTickets() {
         log.log(Level.INFO, "Fetching opened tickets...");
-        TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findTicketByStatus", Ticket.class);
-        query.setParameter("inStatus", Constants.OPEN_TICKET);
+        TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByStatus", Ticket.class);
+        query.setParameter("status", Constants.OPEN_TICKET);
+        
+        if (query.getResultList().size()>0){
+            log.log(Level.INFO,"Open tickets exist...");
+        }
+        else{
+            log.log(Level.INFO,"Open tickets does not exist...");
+        }
         return query.getResultList();
     }
 
@@ -52,8 +59,8 @@ public class TicketDAO implements TicketDAOLocal{
     @Override
     public List<Ticket> getAllClosedTickets() {
         log.log(Level.INFO, "Fetching closed tickets...");
-        TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findTicketByStatus", Ticket.class);
-        query.setParameter("inStatus", Constants.CLOSED_TICKET);
+        TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByStatus", Ticket.class);
+        query.setParameter("status", Constants.CLOSED_TICKET);
         return query.getResultList();
     }
 
@@ -92,7 +99,7 @@ public class TicketDAO implements TicketDAOLocal{
     @Override
     public boolean removeTicket(Ticket ticket) {
         try {
-            if (removeMessage(ticket.getMessages())) {
+            if (removeMessage(ticket.getMessagesList())) {
                 log.log(Level.INFO, "Removing ticket");
                 em.remove(ticket);
                 return true;
@@ -109,10 +116,10 @@ public class TicketDAO implements TicketDAOLocal{
         }
     }
 
-    private boolean removeMessage(List<Message> messages) {
+    private boolean removeMessage(List<Messages> messages) {
         boolean isRemoved = true;
 
-        for (Message message : messages) {
+        for (Messages message : messages) {
             isRemoved = messageDao.removeMessage(message);
             if (!isRemoved) {
                 log.log(Level.SEVERE, "Message id:" + message.getId() + " not removed. Breking from operation.");

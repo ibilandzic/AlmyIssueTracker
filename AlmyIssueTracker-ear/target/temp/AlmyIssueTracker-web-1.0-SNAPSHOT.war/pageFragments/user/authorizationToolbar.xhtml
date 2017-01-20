@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:component id="autorizationComponent">
+        <p:menubar id="adminMenu"
+                   style="border: none">
+
+            <f:facet name="options">
+                <p:commandButton style="max-height: 30px; font-size: 12px"
+                                 value="Odjava"  
+                                 action="#{authBackingBean.logout()}"
+                                 rendered="#{authBackingBean.isRegistered}"
+                                 update="@all"/>
+                <p:commandButton type="button" 
+                                 value="Prijava" 
+                                 rendered="#{not authBackingBean.isRegistered}"
+                                 onclick="PF('loginDlg').show();"
+                                 style="max-height: 30px; font-size: 12px"/>
+            </f:facet>
+        </p:menubar>
+
+        <p:dialog header="Login" widgetVar="loginDlg" resizable="false" modal="true">
+            <h:panelGrid columns="2" cellpadding="5">
+                <h:outputLabel for="username" value="Korisničko ime:" />
+                <p:inputText id="username" value="#{authBackingBean.username}" label="username" />
+
+                <h:outputLabel for="password" value="Lozinka:" />
+                <p:password id="password" value="#{authBackingBean.password}" label="password" />
+
+                <f:facet name="footer">
+                    <p:commandButton value="Login" update="@all" action="#{authBackingBean.login()}"
+                                     oncomplete="PF('loginDlg').hide();"
+                                     />
+                </f:facet>  
+            </h:panelGrid>
+        </p:dialog>
+    </ui:component>
+</html>
+

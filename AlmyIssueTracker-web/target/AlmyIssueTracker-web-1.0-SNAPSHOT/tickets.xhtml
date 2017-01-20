@@ -15,15 +15,22 @@
 
             <h:form id="ticketForm">
                 <p:growl autoUpdate="true" life="500" sticky="true" />
-                <p:tabView id="ticketsTab">
+               
+                <ui:include src="pageFragments/authorizationToolbar.xhtml"/>
+                
+                <p:tabView id="ticketsTab" rendered="#{authBackingBean.admin}">
                     <p:tab title="Otvorene prijave" id="openTickets">
-                        <ui:include src="pageFragments/openTicketCard.xhtml"/>
+                        <ui:include src="pageFragments/admin/openTicketCard.xhtml"/>
+                         
                     </p:tab>
                     <p:tab title="Zatvorene prijave">
-                        <ui:include src="pageFragments/closedTicketsCard.xhtml" />
+                        <ui:include src="pageFragments/admin/closedTicketsCard.xhtml" />
+                      
                     </p:tab>
+                    
                 </p:tabView>
-                <ui:include src="pageFragments/messageList.xhtml"/>
+                <ui:include src="pageFragments/admin/messageList.xhtml" rendered="#{authBackingBean.admin}"/>
+               
             </h:form>
 
 

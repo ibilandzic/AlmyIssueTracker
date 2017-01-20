@@ -5,12 +5,15 @@
  */
 package hr.codiraona.backingbeans;
 
+import hr.codiraona.dao.AllocationsDAOLocal;
 import hr.codiraona.dao.CompanyDAOLocal;
 import hr.codiraona.dao.RoleDAOLocal;
 import hr.codiraona.dao.UserDAOLocal;
+import hr.codiraona.model.Allocation;
 import hr.codiraona.model.Company;
 import hr.codiraona.model.Role;
-import hr.codiraona.model.User;
+import hr.codiraona.model.Users;
+import hr.codiraona.utils.MessageUtils;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,6 +47,9 @@ public class CompanyBackingBean implements Serializable {
     @EJB
     RoleDAOLocal roleDao;
     
+    @EJB
+    AllocationsDAOLocal allocationDao;
+    
 
     private List<Company> companies;
 
@@ -51,28 +57,40 @@ public class CompanyBackingBean implements Serializable {
 
     private Company selectedCompany;
 
-    private List<User> users;
+    private List<Users> users;
 
-    public List<User> getUsers() {
-        return selectedCompany.getUsers();
+
+    public List<Users> getUsers() {
+        return selectedCompany.getUsersList();
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(List<Users> users) {
         this.users = users;
     }
 
-    private User user;
+    private Users user;
 
-    private User selectedUser;
+    private Users selectedUser;
 
     private List<Role> roles;
+    
+    private List<Allocation> availableAllocations;
+
+    public List<Allocation> getAvailableAllocations() {
+        return availableAllocations;
+    }
+
+    public void setAvailableAllocations(List<Allocation> availableAllocations) {
+        this.availableAllocations = availableAllocations;
+    }
+   
 
     /**
      * get user form data
      *
      * @return
      */
-    public User getUser() {
+    public Users getUser() {
         return user;
     }
 
@@ -81,7 +99,7 @@ public class CompanyBackingBean implements Serializable {
      *
      * @param user
      */
-    public void setUser(User user) {
+    public void setUser(Users user) {
         this.user = user;
     }
 
@@ -108,7 +126,7 @@ public class CompanyBackingBean implements Serializable {
      *
      * @return
      */
-    public User getSelectedUser() {
+    public Users getSelectedUser() {
         return selectedUser;
     }
 
@@ -117,7 +135,8 @@ public class CompanyBackingBean implements Serializable {
      *
      * @param selectedUser
      */
-    public void setSelectedUser(User selectedUser) {
+    public void setSelectedUser(Users selectedUser) {
+        log.log(Level.INFO,"Role:"+selectedUser.getRoleId().getName());
         this.selectedUser = selectedUser;
     }
 
@@ -136,6 +155,7 @@ public class CompanyBackingBean implements Serializable {
      * @param selectedCompany
      */
     public void setSelectedCompany(Company selectedCompany) {
+        
         this.selectedCompany = selectedCompany;
     }
 
@@ -165,11 +185,11 @@ public class CompanyBackingBean implements Serializable {
      */
     @PostConstruct
     public void init() {
-        log.log(Level.INFO, "EJB is:" + companyDao);
         companies = companyDao.getAllCompanies();
         selectedCompany = companies.get(0);
-        users = selectedCompany.getUsers();
+        users = selectedCompany.getUsersList();
         roles = roleDao.getAllRoles();
+        availableAllocations = allocationDao.getUnassignedAllocations();
         initCompany();
         initUser();
 
@@ -183,7 +203,7 @@ public class CompanyBackingBean implements Serializable {
     }
     
     private void initUser(){
-        user = new User();
+        user = new Users();
     }
 
     /**
@@ -259,7 +279,8 @@ public class CompanyBackingBean implements Serializable {
 
     public void deleteUser() {
         log.log(Level.INFO, "Deleting user: " + selectedUser.getUsername());
-        if (userDao.removeUser(selectedUser.getId())) {
+        selectedCompany.getUsersList().remove(selectedUser);
+        if (userDao.removeUser(selectedUser.getId()) && companyDao.updateCompany(selectedCompany)) {
             log.log(Level.INFO, "User " + selectedUser.getUsername() + " succesfully deleted");
             log.log(Level.INFO, "Fetching data");
             companies = companyDao.getAllCompanies();
@@ -269,20 +290,46 @@ public class CompanyBackingBean implements Serializable {
 
     }
 
-    public String createUser() {
-         log.log(Level.INFO, "Creating new user: " + user.getUsername());
-        log.log(Level.INFO, "Creating new user: " + user.getRole().getName());
-
-        user.setCompany(selectedCompany);
+    public void createUser() {
+        user.setCompanyId(selectedCompany);
         if (userDao.createUser(user)) {
             log.log(Level.INFO, "User " + user.getUsername() + " successfully created");
-            log.log(Level.INFO, "Fetching data");
-            companies = companyDao.getAllCompanies();
+            selectedCompany.getUsersList().add(user);
+            companyDao.updateCompany(selectedCompany);
         } else {
             log.log(Level.WARNING, "User not created");
         }
         
-        return "done";
+        
+    }
+    
+    public void detachAllocation(Allocation aloc){
+        log.log(Level.INFO,"Dealocating space for company "+aloc.getCompanyId().getName());
+        selectedCompany.getAllocationList().remove(aloc);
+        aloc.setCompanyId(null);
+        
+        if (companyDao.updateCompany(selectedCompany) && allocationDao.updateAllocation(aloc)){
+            MessageUtils.showResponseMessage("Prostor je uspješno dealociran", "Success");
+        }
+        else{
+            MessageUtils.showResponseMessage("Prostor nije dealociran", "Failure");
+        }
+        
+        
+    }
+    
+    public void allocateSpace(Allocation aloc){
+        log.log(Level.INFO,"Allocating space for company "+selectedCompany.getName());
+        aloc.setCompanyId(selectedCompany);
+        selectedCompany.getAllocationList().add(aloc);
+        if (companyDao.updateCompany(selectedCompany) && allocationDao.updateAllocation(aloc)){
+            MessageUtils.showResponseMessage("Prostor je uspješno alociran", "Success");
+        }
+        else{
+            MessageUtils.showResponseMessage("Prostor nije alociran", "Failure");
+        }
+        
+        
     }
 
 }

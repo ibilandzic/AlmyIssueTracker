@@ -23,6 +23,8 @@ public interface CompanyDAOLocal {
     boolean removeCompany(Company company);
     
     List<Company> getAllCompanies();
+
+    Company find(String value);
     
     
     

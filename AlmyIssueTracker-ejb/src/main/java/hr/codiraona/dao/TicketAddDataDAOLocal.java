@@ -23,5 +23,10 @@ public interface TicketAddDataDAOLocal {
     List<Category> getAllCategories();
     
     List<Status> getAllStatus();
+
+    boolean createNewCategory(Category category);
+
+    boolean createNewPriority(Priority priority);
+    
     
 }

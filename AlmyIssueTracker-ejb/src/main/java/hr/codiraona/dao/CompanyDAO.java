@@ -5,8 +5,9 @@
  */
 package hr.codiraona.dao;
 
+import hr.codiraona.model.Allocation;
 import hr.codiraona.model.Company;
-import hr.codiraona.model.User;
+import hr.codiraona.model.Users;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -31,6 +32,8 @@ public class CompanyDAO implements CompanyDAOLocal, Serializable {
     @PersistenceContext(unitName = "AlmyIssueTracker")
     private EntityManager em;
 
+    
+    
     @Override
     public boolean createCompany(Company company) {
         try {
@@ -57,13 +60,14 @@ public class CompanyDAO implements CompanyDAOLocal, Serializable {
 
     @Override
     public boolean removeCompany(Company company) {
-        List<User> users = company.getUsers();
+        /*
+        List<Users> users = company.getUsersList();
         boolean isRemoved = true;
 
         if (users.size()>0) {
             log.log(Level.INFO, "Users found. Starting to remove users.");
             
-            for (User user : users) {
+            for (Users user : users) {
                 //remove all users attaching to company
                 isRemoved = userDao.removeUser(user.getId());
                 log.log(Level.INFO, "User is removed: " + isRemoved);
@@ -86,12 +90,46 @@ public class CompanyDAO implements CompanyDAOLocal, Serializable {
             Company companyToRemove = em.merge(company);
             em.remove(companyToRemove);
             return true;
+        }*/
+        detachAllocations(company);
+        removeUsers(company);
+        
+        if (!em.contains(company)){
+          Company com = em.find(Company.class, company.getId());
+          em.remove(com);
         }
-
+        else{
+        em.remove(company);
+        }
+        return true;
+    }
+    
+    private void detachAllocations(Company company){
+        log.log(Level.INFO,"Detaching allocations from company: "+company.getName());
+        for (Allocation alo:company.getAllocationList()){
+            alo.setCompanyId(null);
+            em.merge(alo);
+        }
+        log.log(Level.INFO,"Allocations succesfully detached");
+        company.getAllocationList().clear();
+    }
+    
+    private void removeUsers(Company company){
+        log.log(Level.INFO,"Removing users from company: "+company.getName());
+        for (Users user:company.getUsersList()){
+            em.remove(user);
+        }
+        log.log(Level.INFO,"Users removed");
+        company.getUsersList().clear();
     }
 
     @Override
     public List<Company> getAllCompanies() {
         return em.createNamedQuery("Company.findAll", Company.class).getResultList();
+    }
+
+    @Override
+    public Company find(String value) {
+        return em.find(Company.class, new Integer(value));
     }
 }

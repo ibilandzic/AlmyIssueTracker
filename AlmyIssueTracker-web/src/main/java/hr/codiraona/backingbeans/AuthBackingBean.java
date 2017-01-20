@@ -7,20 +7,32 @@ package hr.codiraona.backingbeans;
 
 import hr.codiraona.dao.AuthDAOLocal;
 import hr.codiraona.dao.UserDAOLocal;
-import hr.codiraona.model.User;
+import hr.codiraona.model.Ticket;
+import hr.codiraona.model.Users;
+import hr.codiraona.utils.MessageUtils;
+import hr.codiraona.utils.SessionUtils;
 import javax.inject.Named;
-import javax.enterprise.context.SessionScoped;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import org.primefaces.context.RequestContext;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+
+
+
+import javax.servlet.http.HttpSession;
+
 
 /**
  *
  * @author iva.bilandzic
  */
+@ManagedBean
 @Named(value = "authBackingBean")
 @SessionScoped
 public class AuthBackingBean implements Serializable {
@@ -31,14 +43,35 @@ public class AuthBackingBean implements Serializable {
 
     @EJB
     private UserDAOLocal userDao;
+    
+    private List<Ticket> ticketOpenedByUser;
 
-    private User currentUser = null;
+    public List<Ticket> getTicketOpenedByUser() {
+        return ticketOpenedByUser;
+    }
+
+    public void setTicketOpenedByUser(List<Ticket> ticketOpenedByUser) {
+        this.ticketOpenedByUser = ticketOpenedByUser;
+    }
+
+    public List<Ticket> getTicketAssignedToUser() {
+        return ticketAssignedToUser;
+    }
+
+    public void setTicketAssignedToUser(List<Ticket> ticketAssignedToUser) {
+        this.ticketAssignedToUser = ticketAssignedToUser;
+    }
+    private List<Ticket> ticketAssignedToUser;
+    
+    private Users currentUser = null;
 
     private String username;
     private String password;
 
+    
     public String getUsername() {
         return username;
+        
     }
 
     public void setUsername(String username) {
@@ -63,11 +96,11 @@ public class AuthBackingBean implements Serializable {
         this.isRegistered = isRegistered;
     }
 
-    public User getCurrentUser() {
+    public Users getCurrentUser() {
         return currentUser;
     }
 
-    public void setCurrentUser(User user) {
+    public void setCurrentUser(Users user) {
         currentUser = user;
     }
 
@@ -76,56 +109,84 @@ public class AuthBackingBean implements Serializable {
 
     @PostConstruct
     public void init() {
-
-        currentUser = new User();
+        currentUser = new Users();
+        ticketAssignedToUser = new ArrayList<>();
+        ticketOpenedByUser = new ArrayList<>();
     }
+    
 
     public void login() {
         log.log(Level.INFO, "Loggining in...");
         log.log(Level.INFO, "Inputs: username " + getUsername());
-        User user = authDao.login(getUsername(), getPassword());
+        Users user = authDao.login(getUsername(), getPassword());
         setPassword("");
         if (user != null) {
             log.log(Level.INFO, "User fetched");
             setCurrentUser(user);
             setIsRegistered(true);
-            refreshPage();
+            HttpSession session = SessionUtils.getSession();
+            session.setAttribute("username", user.getUsername());
+            getTickets(currentUser.getUsername());
+            log.log(Level.INFO,"Session id: "+session.getId());
+            
         } else {
+            
+            SessionUtils.getSession().invalidate();
+            MessageUtils.showResponseMessage("Pogrešni korisnički podaci.", "Pogresni podaci");
             setCurrentUser(null);
             setIsRegistered(false);
         }
     }
 
-    private void refreshPage() {
-        RequestContext.getCurrentInstance().update("authToolbar");
-        RequestContext.getCurrentInstance().update("dataUnit");
-    }
-
+    
+   
     public boolean isAdmin() {
-        return isInRole("admin");
+        return isRegistered && isInRole("admin");
     }
 
     public boolean isEmployee() {
-        return isInRole("employee");
+        return isRegistered && isInRole("employee");
     }
 
     public boolean isRegularUser() {
-        return isInRole("user");
+        return isRegistered && isInRole("user");
     }
 
     private boolean isInRole(String roleName) {
         if (isRegistered) {
-            return currentUser.getRole().getName().equals(roleName);
+            return currentUser.getRoleId().getName().equals(roleName);
         } else {
             return false;
         }
     }
 
     public void logout() {
+        log.log(Level.INFO,"Logging out...");
         setCurrentUser(null);
         setUsername("");
         setPassword("");
         setIsRegistered(false);
+        SessionUtils.getSession().invalidate();
+        log.log(Level.INFO,"Session invalidated");
+        
+    }
+
+    public void updateUserData() {
+        
+        log.log(Level.INFO, "Updating user with username:" + getCurrentUser().getUsername());
+        if (userDao.updateUser(getCurrentUser())) {
+            MessageUtils.showResponseMessage("Podaci su ažurirani", "Success");
+
+        } else {
+            MessageUtils.showResponseMessage("Podaci nisu ažurirani", "Failure");
+        }
+    }
+    
+    private void getTickets(String username) {
+        if (currentUser!=null){
+            ticketAssignedToUser = userDao.getTicketsAssignedToUser(username);
+            ticketOpenedByUser = userDao.getTicketsReportedByUser(username);
+        }
     }
 
 }

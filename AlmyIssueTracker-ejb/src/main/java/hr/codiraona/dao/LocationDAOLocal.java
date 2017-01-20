@@ -5,7 +5,8 @@
  */
 package hr.codiraona.dao;
 
-import hr.codiraona.model.Location;
+import hr.codiraona.model.Allocation;
+import hr.codiraona.model.Locations;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,8 +17,12 @@ import javax.ejb.Local;
 @Local
 public interface LocationDAOLocal {
 
-    List<Location> getAllLocations();
+    List<Locations> getAllLocations();
 
-    boolean createNewLocation(Location location);
+    boolean createNewLocation(Locations location);
+
+    boolean updateLocation(Locations location);
+
+    
     
 }

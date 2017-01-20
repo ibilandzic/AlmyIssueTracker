@@ -7,7 +7,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import hr.codiraona.model.Company;
-import hr.codiraona.model.Location;
+import hr.codiraona.model.Locations;
 import hr.codiraona.model.Role;
 
 public class UserDTO {
@@ -32,7 +32,7 @@ public class UserDTO {
 
 	private Role role;
 
-	private Location location;
+	private Locations location;
 
 	/**
 	 * get user id
@@ -191,7 +191,7 @@ public class UserDTO {
 	 * gets location
 	 * @return
 	 */
-	public Location getLocation() {
+	public Locations getLocation() {
 		return location;
 	}
 
@@ -199,7 +199,7 @@ public class UserDTO {
 	 * sets location
 	 * @param location
 	 */
-	public void setLocation(Location location) {
+	public void setLocation(Locations location) {
 		this.location = location;
 	}
 

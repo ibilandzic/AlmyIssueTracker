@@ -8,7 +8,7 @@ package hr.codiraona.dao;
 import hr.codiraona.dto.UserDTO;
 import hr.codiraona.model.Role;
 import hr.codiraona.model.Ticket;
-import hr.codiraona.model.User;
+import hr.codiraona.model.Users;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -19,21 +19,23 @@ import javax.ejb.Local;
 @Local
 public interface UserDAOLocal {
     
-    List<User> getAllUsers();
+    List<Users> getAllUsers();
     
-    public boolean createUser(User user);
+    public boolean createUser(Users user);
     
-    public boolean updateUser(User user);
+    public boolean updateUser(Users user);
     
     public boolean setPassword(String password, int user_id);
     
     public List<Ticket> getTicketsReportedByUser(String username);
     
-    public List<Ticket> getTicketsAssignedByUser(String username);
+    public List<Ticket> getTicketsAssignedToUser(String username);
     
     public boolean removeUser(int id);
     
-    List<User> getUsersByRole(String inRoleName);
+    List<Users> getUsersByRole(String inRoleName);
+
+    List<Ticket> getTicketsReportedByCompany(String username);
     
     
 }

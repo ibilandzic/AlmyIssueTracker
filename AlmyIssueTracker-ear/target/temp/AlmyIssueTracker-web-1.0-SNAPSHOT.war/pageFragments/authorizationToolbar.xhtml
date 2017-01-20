@@ -7,33 +7,40 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:component id="autorizationComponent">
-        
-           
+        <p:menubar id="adminMenu"
+                   style="border: none">
+            <p:menuitem value="Tvrtke" url="companyAdministration.xhtml" icon="ui-icon-document" rendered="#{authBackingBean.admin}" style="font-size: 11px"/>
+            <p:menuitem value="Generalne postavke" icon="ui-icon-gear" url="generalAdministration.xhtml" rendered="#{authBackingBean.admin}" style="font-size: 11px"/>
+            <p:menuitem value="Prijave" url="tickets.xhtml" icon="ui-icon-note" rendered="#{authBackingBean.admin}" style="font-size: 11px"/>
+            <f:facet name="options">
+                <p:commandButton style="max-height: 30px; font-size: 12px"
+                                 value="Odjava"  
+                                 action="#{authBackingBean.logout()}"
+                                 rendered="#{authBackingBean.isRegistered}"
+                                 update="@all"/>
+                <p:commandButton type="button" 
+                                 value="Prijava" 
+                                 rendered="#{not authBackingBean.isRegistered}"
+                                 onclick="PF('loginDlg').show();"
+                                 style="max-height: 30px; font-size: 12px"/>
+            </f:facet>
+        </p:menubar>
 
-                <h:commandButton value="Login" onclick="PF('loginDlg').show();" title="login" rendered="#{not authBackingBean.isRegistered}" />
-                <h:outputText value="Trenutni korisnik: #{authBackingBean.username} " rendered="#{authBackingBean.isRegistered}"/>
-                <p:commandButton  id="logoutBtn" value="Logout" rendered="#{authBackingBean.isRegistered}" action="#{authBackingBean.logout()}"/>
-                
-                <h:form id="loginForm">
-                
-                    <p:dialog header="Login" widgetVar="loginDlg" resizable="false">
-                        <h:panelGrid columns="2" cellpadding="5">
-                            <h:outputLabel for="username" value="Korisničko ime:" />
-                            <p:inputText id="in_username" value="#{authBackingBean.username}" required="true" label="username" />
+        <p:dialog header="Login" widgetVar="loginDlg" resizable="false" modal="true">
+            <h:panelGrid columns="2" cellpadding="5">
+                <h:outputLabel for="username" value="Korisničko ime:" />
+                <p:inputText id="in_username" value="#{authBackingBean.username}" label="username" />
 
-                            <h:outputLabel for="password" value="Lozinka:" />
-                            <p:password id="in_password" value="#{authBackingBean.password}" required="true" label="password" />
+                <h:outputLabel for="password" value="Lozinka:" />
+                <p:password id="in_password" value="#{authBackingBean.password}" label="password" />
 
-                            <f:facet name="footer">
-                                <p:commandButton value="Login" update="@all" action="#{authBackingBean.login()}"
-                                                 oncomplete="PF('loginDlg').hide();"/>
-                            </f:facet>  
-                        </h:panelGrid>
-                    </p:dialog>
-                </h:form>
-
-            
-        
+                <f:facet name="footer">
+                    <p:commandButton value="Login" update="@all" action="#{authBackingBean.login()}"
+                                     oncomplete="PF('loginDlg').hide();"
+                                     />
+                </f:facet>  
+            </h:panelGrid>
+        </p:dialog>
     </ui:component>
 </html>
 

@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
 Built-By: iva.bilandzic
-Class-Path: primefaces-5.0.jar jsf-api-2.2.7.jar jsf-impl-2.2.7.jar fl
- ick-1.0.10.jar lib/validation-api-1.1.0.Final.jar lib/ejb-api-3.0.jar
+Class-Path: primefaces-5.0.jar jsf-api-2.2.7.jar jsf-impl-2.2.7.jar al
+ l-themes-1.0.10.jar lib/validation-api-1.1.0.Final.jar lib/ejb-api-3.
+ 0.jar
 Created-By: Apache Maven 3.0.5
 Build-Jdk: 1.8.0_73
 

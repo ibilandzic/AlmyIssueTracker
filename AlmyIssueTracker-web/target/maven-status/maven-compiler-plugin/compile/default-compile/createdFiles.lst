@@ -1,4 +1,12 @@
-hr\codiraona\backingbeans\GeneralAdminBackingBean.class
-hr\codiraona\backingbeans\TicketsManagedBean.class
-hr\codiraona\backingbeans\CompanyBackingBean.class
+hr\codiraona\backingbeans\EmployeeBackingBean.class
 hr\codiraona\backingbeans\AuthBackingBean.class
+hr\codiraona\converters\RoleConverter.class
+hr\codiraona\backingbeans\UserPageBackingBean.class
+hr\codiraona\converters\CompanyConverter.class
+hr\codiraona\utils\Constants.class
+hr\codiraona\backingbeans\GeneralAdminBackingBean.class
+hr\codiraona\utils\MessageUtils.class
+hr\codiraona\backingbeans\TicketsManagedBean.class
+hr\codiraona\converters\AllocationConverter.class
+hr\codiraona\backingbeans\CompanyBackingBean.class
+hr\codiraona\utils\SessionUtils.class

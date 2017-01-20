@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:component id="companyAllocationsFragment">
+
+
+        <h3><h:outputText value="Popis alokacija"/></h3>
+
+
+        <p:dataTable value="#{companyBackingBean.selectedCompany.allocationList}" 
+                     var="item"
+                     rowKey="#{item.id}"
+                     emptyMessage="Nema alociranog prostora za tvrtku: #{companyBackingBean.selectedCompany.name}"
+                     id="allocTable"
+                     widgetVar="allocTable"
+                     >
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Lokacija"/>
+                </f:facet>
+                <h:outputText value="#{item.locationId.name}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Zgrada"/>
+                </f:facet>
+                <h:outputText value="#{item.buildingName}"/>
+            </p:column>
+
+
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Kat"/>
+                </f:facet>
+                <h:outputText value="#{item.floor}"/>
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Dio kata"/>
+                </f:facet>
+                <h:outputText value="#{item.floorPart}"/>
+            </p:column>
+
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Raspon soba"/>
+                </f:facet>
+                <h:outputText value="#{item.roomRange}"/>
+            </p:column>
+            <p:column headerText="Dealociranje">
+                <p:commandLink action="#{companyBackingBean.detachAllocation(item)}"
+                               update=":#{p:component('allocTable')}" value="Dealociraj"
+                               />
+
+            </p:column>
+            <f:facet name="footer">
+                <p:commandButton value="Alociraj prostor" onclick="PF('alocDlg').show()"/>
+            </f:facet>
+        </p:dataTable>
+
+        <p:dialog id="alocDlg"
+                  header="Alociranje prostora"
+                  widgetVar="alocDlg"
+                  visible="false"
+                  modal="true"
+                  showHeader="true"
+                  width="50%"
+                  >
+            <p:dataTable value="#{companyBackingBean.availableAllocations}"
+                         var="item"
+                         emptyMessage="Nem dostupnog prostora"
+                         style="width: auto">
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Lokacija"/>
+                    </f:facet>
+                    <h:outputText value="#{item.locationId.name}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Oznaka zgrade"/>
+                    </f:facet>
+                    <h:outputText value="#{item.buildingName}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Raspon soba"/>
+                    </f:facet>
+                    <h:outputText value="#{item.roomRange}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Kat"/>
+                    </f:facet>
+                    <h:outputText value="#{item.floor}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <h:outputText value="Dio kata"/>
+                    </f:facet>
+                    <h:outputText value="#{item.floorPart}"/>
+                </p:column>
+                <p:column>
+                    <p:commandLink value="Odaberi"
+                                   action="#{companyBackingBean.allocateSpace(item)}"
+                                   update=":#{p:component('allocTable')}"
+                                   oncomplete="PF('alocDlg').hide()"/>
+                </p:column>
+            </p:dataTable>
+        </p:dialog>
+
+    </ui:component>
+</html>
+

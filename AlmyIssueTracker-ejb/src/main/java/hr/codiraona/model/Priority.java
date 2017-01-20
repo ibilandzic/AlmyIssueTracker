@@ -3,61 +3,61 @@ package hr.codiraona.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
-
 /**
  * The persistent class for the PRIORITY database table.
- * 
+ *
  */
 @Entity
-@Table(name="PRIORITY", schema="TICKETING")
-@NamedQuery(name="Priority.findAll", query="SELECT p FROM Priority p")
+@Table(name = "PRIORITY", schema = "TICKETING")
+@NamedQuery(name = "Priority.findAll", query = "SELECT p FROM Priority p ORDER BY p.priorityNumber ASC")
 public class Priority implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+    private static final long serialVersionUID = 1L;
 
-	private String description;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	private String name;
+    private String description;
 
-	@Column(name="PRIORITY_NUMBER")
-	private int priorityNumber;
+    private String name;
 
-	public Priority() {
-	}
+    @Column(name = "PRIORITY_NUMBER",unique = true)
+    private int priorityNumber;
 
-	public int getId() {
-		return this.id;
-	}
+    public Priority() {
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return this.name;
+    }
 
-	public int getPriorityNumber() {
-		return this.priorityNumber;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPriorityNumber(int priorityNumber) {
-		this.priorityNumber = priorityNumber;
-	}
+    public int getPriorityNumber() {
+        return this.priorityNumber;
+    }
+
+    public void setPriorityNumber(int priorityNumber) {
+        this.priorityNumber = priorityNumber;
+    }
 
 }

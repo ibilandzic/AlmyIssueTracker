@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:component id="prioritiesCard">
+
+        
+                <h3><h:outputText value="Popis prioriteta kvarova"/></h3>
+                <p:dataTable value="#{generalAdminBackingBean.priorities}" 
+                             var="item"
+                             id="prioritiesTable"
+                             widgetVar="prioritiesTable"
+                             lazy="false"
+                             tableStyle="width:auto"
+                             rowKey="#{item.id}"
+                             emptyMessage="Ne postoji niti jedan prioritet prijave">
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Ime prioriteta"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"  style="font-weight: bold"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Broj prioriteta"/>
+                        </f:facet>
+                        <h:outputText value="#{item.priorityNumber}"/>
+                    </p:column>
+                     <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Opis prioriteta"/>
+                        </f:facet>
+                         <h:outputText value="#{item.description}"/>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:commandButton value="Kreiraj novu razinu prioriteta" 
+                                 style="margin-top: 20px"
+                                 onclick="PF('newPriorityDlg').show()"/>
+                
+                <p:dialog id="newPriorityDlg"
+                          widgetVar="newPriorityDlg"
+                          visible="false"
+                          
+                          >
+                            
+                    <p:panelGrid styleClass="myPanelGrid" columns="2">
+                        <h:outputLabel value="Ime prioriteta:" for="priorityName" title="Unesite ime prioriteta" />
+                        <h:inputText id="priorityName" value="#{generalAdminBackingBean.newPriority.name}"/>
+                        
+                        <h:outputLabel value="Broj prioriteta:" for="priorityNum" title="Unesite broj prioriteta" />
+                        <h:inputText id="priorityNum" value="#{generalAdminBackingBean.newPriority.priorityNumber}">
+                            <f:convertNumber integerOnly="true" />
+                        </h:inputText>
+                        
+                        <h:outputLabel value="Opis prioriteta:" for="priorityDescr" title="Unesite opis prioriteta" />
+                        <h:inputText id="priorityDescr" value="#{generalAdminBackingBean.newPriority.description}"/>
+                    </p:panelGrid>
+                    
+                    <p:commandButton id="newPriorityBtn" 
+                                     action="#{generalAdminBackingBean.createNewPriority()}"
+                                     onsuccess="PF('newPriorityDlg').hide()"
+                                     update=":#{p:component('prioritiesTable')}"
+                                     value="Spremi"
+                                     title="Spremi"
+                                     />
+                                     
+                </p:dialog>
+
+
+    </ui:component>
+</html>
+

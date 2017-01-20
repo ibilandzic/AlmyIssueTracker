@@ -44,7 +44,41 @@ public class TicketAddDataDAO implements TicketAddDataDAOLocal {
         log.log(Level.INFO, "Fetching all available statuses");
         return em.createNamedQuery("Status.findAll", Status.class).getResultList();
     }
+    
+    
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+
+    @Override
+    public boolean createNewCategory(Category category) {
+        log.log(Level.INFO,"Creating new category by name: "+category.getName());
+        
+        try{
+            em.persist(category);
+            return true;
+        }
+        catch(Exception e){
+            log.log(Level.SEVERE,"Problem persisting new category. Cause:"+e.getMessage());
+            return false;
+            
+        }
+        
+    }
+
+    @Override
+    public boolean createNewPriority(Priority priority) {
+        
+        log.log(Level.INFO,"Creating new priority...");
+        try{
+            em.persist(priority);
+            return true;
+        }
+        catch(Exception e){
+            log.log(Level.SEVERE,"Problem persisting priority. Cause: "+e.getMessage());
+            return false;
+        }
+    }
+    
+    
 }

@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:component id="locationsCard">
+
+
+        <h3><h:outputText value="Popis dostupnih lokacija"/></h3>
+        <p:dataTable value="#{generalAdminBackingBean.locations}" 
+                     var="item"
+                     id="locationsTable"
+                     widgetVar="locationsTable"
+                     lazy="false"
+                     tableStyle="width:auto"
+                     rowKey="#{item.id}"
+                     emptyMessage="Ne postoji niti jedana lokacija"
+                     selectionMode="single"
+                     selection="#{generalAdminBackingBean.selectedLocation}"
+                     editable="true"
+                     editMode="row"
+                     >
+            <p:ajax event="rowEdit" listener="#{generalAdminBackingBean.updateLocation()}"/>
+            <p:ajax event="rowSelect" update=":#{p:component('allocationsTable')}" />
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Ime lokacije"/>
+                </f:facet>
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{item.name}"  style="font-weight: bold"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:inputText value="#{item.name}"/>
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Adresa lokacije"/>
+                </f:facet>
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{item.address}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:inputText value="#{item.address}"/>
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Grad"/>
+                </f:facet>
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{item.city}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:inputText value="#{item.city}"/>
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column>
+                <f:facet name="header">
+                    <h:outputText value="Država"/>
+                </f:facet>
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{item.country}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:inputText value="#{item.country}"/> 
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column style="width:32px" headerText="Editranje">
+                <p:rowEditor />
+            </p:column>
+        </p:dataTable>
+
+        <p:commandButton value="Kreiraj novu lokaciju" 
+                         style="margin-top: 20px"
+                         onclick="PF('newLocationDlg').show()"/>
+
+        <p:hotkey bind="ctrl+alt+N" handler="PF('newLocationDlg').show()" />
+        <p:dialog id="newLocationDlg"
+                  widgetVar="newLocationDlg"
+                  visible="false"
+                  >
+
+            <p:panelGrid styleClass="myPanelGrid" columns="2">
+                <h:outputLabel value="Ime lokacije:" for="locationName" title="Unesite ime lokacije" />
+                <h:inputText id="locationName" value="#{generalAdminBackingBean.newLocation.name}"/>
+
+                <h:outputLabel value="Adresa lokacije:" for="locaddress" title="Unesite adresu lokacije" />
+                <h:inputText id="locaddress" value="#{generalAdminBackingBean.newLocation.address}"/>
+
+                <h:outputLabel value="Grad:" for="loccity" title="Unesite grad lokacije" />
+                <h:inputText id="loccity" value="#{generalAdminBackingBean.newLocation.city}"/>
+
+                <h:outputLabel value="Država:" for="loccountry" title="Unesite državu lokacije" />
+                <h:inputText id="loccountry" value="#{generalAdminBackingBean.newLocation.country}"/>
+            </p:panelGrid>
+
+            <p:commandButton id="newLocationBtn" 
+                             action="#{generalAdminBackingBean.createNewLocation()}"
+                             onsuccess="PF('newLocationDlg').hide()"
+                             update=":#{p:component('locationsTable')}"
+                             value="Spremi"
+                             title="Spremi"
+                             />
+
+        </p:dialog>
+
+
+    </ui:component>
+</html>
+

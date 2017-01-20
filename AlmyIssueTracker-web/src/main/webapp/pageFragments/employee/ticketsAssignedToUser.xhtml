@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:component id="myAssignemntsCard">
+        <style>
+            .detailsLink:hover{
+                color: activecaption !important;
+                font-weight: bold;
+            }
+            .itemLabel{
+                font-weight: bold;
+                font-size: small
+
+            }
+
+
+            .myPanelGrid.ui-panelgrid>*>tr,
+            .myPanelGrid.ui-panelgrid>*>tr>td{
+                border:none;
+            }
+            .infoMessage{
+                background-color: blanchedalmond;
+            }
+
+        </style>
+
+
+        <!-- open tickets grid -->
+        <p:dataGrid lazy="false"
+                    id="myAssignmentGrid"
+                    emptyMessage="Nemate niti jedan zadatak"
+                    value="#{authBackingBean.ticketAssignedToUser}"
+                    paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {NextPageLink} {RowsPerPageDropdown}"
+                    rowsPerPageTemplate="3,6"
+                    paginator="true"
+                    var="item"
+                    rows="1"
+                    style="border: none"
+
+                    >
+            <p:panelGrid columns="2"
+                         style="border: none; max-height: 300px">
+
+                <p:outputLabel value="Naslov:" for="title" styleClass="itemLabel" />
+                <h:outputText id="title" value="#{item.title}" title="Nalsov" />
+
+                <p:outputLabel value="Opis:" for="description" styleClass="itemLabel"/>
+                <h:outputText id="description" value="#{item.description}" title="Kratki opis"/>
+
+                <p:outputLabel value="Lokacija:" for="location" styleClass="itemLabel"/>  
+                <h:outputText id="location" value="#{item.allocationId.locationId.name}" title="Lokacija"/>
+
+                <p:outputLabel value="Zgrada:" for="building" styleClass="itemLabel"/>
+                <h:outputText id="building" value="#{item.allocationId.buildingName}"/>
+
+                <p:outputLabel value="Kat:" for="floor" styleClass="itemLabel"/>
+                <h:outputText id="floor" value="#{item.allocationId.floor}"/>
+
+                <p:outputLabel value="Dio kata:" for="floorPart" styleClass="itemLabel"/>
+                <h:outputText id="floorPart" value="#{item.allocationId.floorPart}"/>
+
+                <p:outputLabel value="Kategorija:" for="category" styleClass="itemLabel"/>
+                <h:outputText id="category" value="#{item.category}" />
+
+                <p:outputLabel value="Prioritet:" for="priority" styleClass="itemLabel"/>          
+                <h:outputText id="priority" value="#{item.priority}" />
+
+                <p:outputLabel value="Status:" for="status" styleClass="itemLabel"/>
+                <h:outputText id="status" value="#{item.status}"/>
+
+                <p:outputLabel for="contactPerson" value="Kontakt osoba" styleClass="itemLabel" />
+                <h:outputText id="contactPerson" value="#{item.contactPerson}" />
+                
+                <p:outputLabel for="contactPhone" value="Kontakt telefon:" styleClass="itemLabel" />
+                <h:outputText id="contactPhone" value="#{item.contactPhone}" />
+                
+                <p:outputLabel value="Prijava kreirana:" styleClass="itemLabel" for="openedAt" />
+                <h:outputText id="openedAt" value="#{item.createdAt}">
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                </h:outputText>
+
+                <p:commandLink action="#{employeeBackingBean.setSelectedTicket(item)}" 
+                               update=":#{p:component('messageList')} :#{p:component('addMessageBtn')}" 
+                               value="Odaberi prijavu" />
+            </p:panelGrid>
+            <p:spacer height="20px" />
+            
+    </ui:component>
+</html>
+

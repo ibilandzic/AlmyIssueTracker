@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <ui:component id="personalDataCard">
+
+
+        <h3><h:outputText value="Pregled i ažuriranje podataka"/></h3>
+        <p:panelGrid columns="2" id="personalDataForm">
+            <p:outputLabel value="Ime:" for="firstName" />
+            <p:inputText id="firstName" value="#{userPageBackingBean.authBean.currentUser.firstName}" title="FirstName"/>
+            <p:outputLabel value="Prezime:" for="lastName" />
+            <p:inputText id="lastName" value="#{authBackingBean.currentUser.lastName}" title="LastName" />
+            <p:outputLabel value="Korisničko ime:" for="username" />
+            <p:inputText id="username" value="#{authBackingBean.currentUser.username}" title="Username" readonly="true"/>
+            <p:outputLabel value="Lozinka:" for="password" />
+            <p:inputText id="password" value="#{authBackingBean.currentUser.password}" title="Password"/>
+            <p:outputLabel value="Email adresa:" for="email" />
+            <p:inputText id="email" value="#{authBackingBean.currentUser.email}" title="Email" />
+            <p:outputLabel value="Broj telefona:" for="phoneNumber" />
+            <p:inputText id="phoneNumber" value="#{authBackingBean.currentUser.phoneNumber}" title="PhoneNumber" />
+            <p:outputLabel value="Broj mobitela:" for="mobileNumber" />
+            <p:inputText id="mobileNumber" value="#{authBackingBean.currentUser.mobileNumber}" title="MobileNumber" />
+            <p:outputLabel value="Pripada tvrtki:" for="companyId" />
+            <p:inputText id="companyId" value="#{authBackingBean.currentUser.companyId.name}" title="Tvrtka" readonly="true"/>
+            <f:facet name="footer">
+                <p:commandButton action="#{authBackingBean.updateUserData()}"
+                                 update=":#{p:component('personalDataForm')}"
+                                 value="Sačuvaj promjene"
+                                 />
+            </f:facet>
+        </p:panelGrid>
+
+
+
+    </ui:component>
+
+</html>
+

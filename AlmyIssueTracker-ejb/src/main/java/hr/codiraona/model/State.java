@@ -3,50 +3,50 @@ package hr.codiraona.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
-
 /**
  * The persistent class for the STATE database table.
- * 
+ *
  */
 @Entity
-@Table(name="STATE", schema="TICKETING")
-@NamedQuery(name="State.findAll", query="SELECT s FROM State s")
+@Table(name = "STATE", schema = "TICKETING")
+@NamedQuery(name = "State.findAll", query = "SELECT s FROM State s")
 public class State implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+    private static final long serialVersionUID = 1L;
 
-	private String description;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	private String name;
+    private String description;
 
-	public State() {
-	}
+    private String name;
 
-	public int getId() {
-		return this.id;
-	}
+    public State() {
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return this.id;
+    }
 
-	public String getDescription() {
-		return this.description;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public String getDescription() {
+        return this.description;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

@@ -6,10 +6,12 @@
 package hr.codiraona.dao;
 
 import hr.codiraona.dto.UserDTO;
-import hr.codiraona.model.Message;
+import hr.codiraona.model.Allocation;
+import hr.codiraona.model.Messages;
 import hr.codiraona.model.Role;
 import hr.codiraona.model.Ticket;
-import hr.codiraona.model.User;
+import hr.codiraona.model.Users;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,9 +38,9 @@ public class UserDAO implements UserDAOLocal {
     
 
     @Override
-    public List<User> getAllUsers() {
+    public List<Users> getAllUsers() {
         try {
-            return em.createNamedQuery("User.findAll", User.class).getResultList();
+            return em.createNamedQuery("Users.findAll", Users.class).getResultList();
         } catch (Exception e) {
             log.log(Level.WARNING, "Problem fetching all existing users");
             log.log(Level.WARNING, e.getMessage());
@@ -48,7 +50,7 @@ public class UserDAO implements UserDAOLocal {
     }
 
     @Override
-    public boolean createUser(User user) {
+    public boolean createUser(Users user) {
         try {
             em.persist(user);
             return true;
@@ -59,7 +61,7 @@ public class UserDAO implements UserDAOLocal {
     }
 
     @Override
-    public boolean updateUser(User user) {
+    public boolean updateUser(Users user) {
         boolean isUpdated = false;
         try {
             em.merge(user);
@@ -72,22 +74,12 @@ public class UserDAO implements UserDAOLocal {
         }
     }
 
-    private void setUserValues(User user, UserDTO userDTO) {
-        user.setCompany(userDTO.getCompany());
-        user.setEmail(userDTO.getEmail());
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setMobileNumber(userDTO.getMobileNumber());
-        user.setRole(userDTO.getRole());
-        user.setUsername(userDTO.getUsername());
-        user.setLocation(userDTO.getLocation());
-    }
 
     @Override
     public List<Ticket> getTicketsReportedByUser(String username) {
         try {
-            TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByReported", Ticket.class);
-            query.setParameter("inUsername", username);
+            TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByReportedBy", Ticket.class);
+            query.setParameter("reportedBy", username);
             List<Ticket> tickets = query.getResultList();
             if (tickets != null) {
                 return tickets;
@@ -98,12 +90,14 @@ public class UserDAO implements UserDAOLocal {
             return null;
         }
     }
+    
+    
 
     @Override
-    public List<Ticket> getTicketsAssignedByUser(String username) {
+    public List<Ticket> getTicketsAssignedToUser(String username) {
         try {
-            TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByAssignee", Ticket.class);
-            query.setParameter("inUsername", username);
+            TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByAssignedTo", Ticket.class);
+            query.setParameter("assignedTo", username);
             List<Ticket> tickets = query.getResultList();
             if (tickets != null) {
                 return tickets;
@@ -120,7 +114,7 @@ public class UserDAO implements UserDAOLocal {
     public boolean removeUser(int id) {
         try {
             //get user by id
-            User user = em.find(User.class, id);
+            Users user = em.find(Users.class, id);
 
             if (user != null) {
                 log.log(Level.INFO, "Removing user :" + user.getUsername());
@@ -145,11 +139,11 @@ public class UserDAO implements UserDAOLocal {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     private void setPostedByToErased(String username) {
-        TypedQuery<Message> query = em.createNamedQuery("Message.findByAuthor", Message.class);
-        query.setParameter("inUsername", username);
-        List<Message> messages = query.getResultList();
+        TypedQuery<Messages> query = em.createNamedQuery("Messages.findByPostedBy", Messages.class);
+        query.setParameter("postedBy", username);
+        List<Messages> messages = query.getResultList();
         if (!messages.isEmpty()) {
-            for (Message message : messages) {
+            for (Messages message : messages) {
                 message.setPostedBy(String.format("%s-erased", username));
                 em.merge(message);
             }
@@ -157,8 +151,8 @@ public class UserDAO implements UserDAOLocal {
     }
 
     private void setAssignedToErased(String username) {
-        TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByAssignee", Ticket.class);
-        query.setParameter("inUsername", username);
+        TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByAssignedTo", Ticket.class);
+        query.setParameter("assignedTo", username);
         List<Ticket> tickets = query.getResultList();
         if (!tickets.isEmpty()) {
             for (Ticket ticket : tickets) {
@@ -169,8 +163,8 @@ public class UserDAO implements UserDAOLocal {
     }
 
     private void setReportedByToErased(String username) {
-        TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByReporter", Ticket.class);
-        query.setParameter("inUsername", username);
+        TypedQuery<Ticket> query = em.createNamedQuery("Ticket.findByReportedBy", Ticket.class);
+        query.setParameter("reportedBy", username);
         List<Ticket> tickets = query.getResultList();
         if (!tickets.isEmpty()) {
             for (Ticket ticket : tickets) {
@@ -183,7 +177,7 @@ public class UserDAO implements UserDAOLocal {
     @Override
     public boolean setPassword(String password, int user_id) {
         try {
-            User user = em.find(User.class, user_id);
+            Users user = em.find(Users.class, user_id);
             user.setPassword(password);
             em.merge(user);
             return true;
@@ -194,11 +188,25 @@ public class UserDAO implements UserDAOLocal {
     }
 
     @Override
-    public List<User> getUsersByRole(String inRoleName) {
+    public List<Users> getUsersByRole(String inRoleName) {
         Role role = roleDao.getRoleByName(inRoleName);
-        return em.createNamedQuery("User.findByRole", User.class)
+        return em.createNamedQuery("Users.findByRole", Users.class)
                 .setParameter("inRole", role)
                 .getResultList();
+    }
+
+    @Override
+    public List<Ticket> getTicketsReportedByCompany(String username) {
+        TypedQuery<Users> query = em.createNamedQuery("Users.findByUsername", Users.class);
+        query.setParameter("username", username);
+        List<Allocation> allocations = query.getSingleResult().getCompanyId().getAllocationList();
+        List<Ticket> allTickets = new ArrayList<>();
+        
+        for (Allocation allocation : allocations){
+            allTickets.addAll(allocation.getTicketList());
+        }
+        
+        return allTickets;
     }
 
 }

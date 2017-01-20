@@ -6,7 +6,7 @@
 package hr.codiraona.dao;
 
 
-import hr.codiraona.model.User;
+import hr.codiraona.model.Users;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.Stateless;
@@ -27,11 +27,11 @@ public class AuthDAO implements AuthDAOLocal {
     private EntityManager em;
 
     @Override
-    public User login(String username, String password) {
-        User currentUser = null;
+    public Users login(String username, String password) {
+        Users currentUser = null;
         try {
             log.log(Level.INFO,username);
-            TypedQuery<User> query = em.createNamedQuery("User.findByCredentials", User.class);
+            TypedQuery<Users> query = em.createNamedQuery("Users.findByCredentials", Users.class);
             query.setParameter("inUsername", username);
             query.setParameter("inPassword", password);
             currentUser = query.getResultList().get(0);

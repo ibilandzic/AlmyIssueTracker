@@ -7,21 +7,52 @@
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
         <title>Administracija općih podataka</title>
+                <style>
+            .detailsLink:hover{
+                color: activecaption !important;
+                font-weight: bold;
+            }
+            .itemLabel{
+                font-weight: bold;
+                font-size: small
+
+            }
+
+
+            .myPanelGrid.ui-panelgrid>*>tr,
+            .myPanelGrid.ui-panelgrid>*>tr>td{
+                border:none;
+            }
+
+            .inputFields{
+                border:none;
+                font-size:small;
+            }
+            .infoMessage{
+                background-color: blanchedalmond;
+            }
+
+        </style>
     </h:head>
     <h:body>
         <f:view>
+            
             <h:form id="generalAdministration">
-                <p:tabView id="generalAdminTab">
-                    <p:tab id="categoriesAdministration">
-                        <ui:include src="pageFragments/categoriesCard.xhtml"
+                <ui:include src="pageFragments/authorizationToolbar.xhtml"/>
+                <p:growl autoUpdate="true" life="500" sticky="true" />
+                <p:tabView id="generalAdminTab" rendered="#{authBackingBean.admin}">
+                    <p:tab id="categoriesAdministration" title="Administracija kategorija">
+                        <ui:include src="pageFragments/admin/categoriesCard.xhtml"/>
                     </p:tab>
-                    <p:tab id="prioritiesAdministration">
-                        
+                    <p:tab id="prioritiesAdministration" title="Administracija prioriteta">
+                        <ui:include src="pageFragments/admin/priorityCard.xhtml" />
                     </p:tab>
-                    <p:tab id="locationsTab">
-                        
+                    <p:tab id="locationsTab" title="Administracija lokacija">
+                        <ui:include src="pageFragments/admin/locationsCard.xhtml" />
+                        <ui:include src="pageFragments/admin/allocationsCard.xhtml"/>
                     </p:tab>
                 </p:tabView>
+                
             </h:form>
         </f:view>
 

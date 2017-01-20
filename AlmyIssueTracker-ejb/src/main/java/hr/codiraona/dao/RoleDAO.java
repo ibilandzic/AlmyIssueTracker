@@ -57,4 +57,9 @@ public class RoleDAO implements RoleDAOLocal {
             return null;
         }
     }
+
+    @Override
+    public Role find(String value) {
+        return em.find(Role.class, new Integer(value));
+    }
 }

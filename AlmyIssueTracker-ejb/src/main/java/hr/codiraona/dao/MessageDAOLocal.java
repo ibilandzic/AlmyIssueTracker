@@ -5,7 +5,7 @@
  */
 package hr.codiraona.dao;
 
-import hr.codiraona.model.Message;
+import hr.codiraona.model.Messages;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,9 +16,9 @@ import javax.ejb.Local;
 @Local
 public interface MessageDAOLocal {
     
-    boolean removeMessage(Message message);
+    boolean removeMessage(Messages message);
     
-    boolean createMessage(Message message);
+    boolean createMessage(Messages message);
     
-    boolean editMessage(Message message);
+    boolean editMessage(Messages message);
 }

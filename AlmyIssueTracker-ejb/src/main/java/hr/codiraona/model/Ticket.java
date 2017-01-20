@@ -1,189 +1,250 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package hr.codiraona.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * The persistent class for the TICKET database table.
  *
+ * @author iva.bilandzic
  */
 @Entity
-@Table(name = "TICKET", schema = "TICKETING")
+@Table(name = "TICKET",schema = "TICKETING")
+@XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Ticket.findAll", query = "SELECT t FROM Ticket t ORDER BY t.priorityNum,t.createdAt ASC")
-    ,
-	@NamedQuery(name = "Ticket.findByReporter", query = "SELECT t FROM Ticket t where t.reportedBy =:inUsername ORDER BY t.priorityNum, t.createdAt ASC")
-    ,
-	@NamedQuery(name = "Ticket.findByAssignee", query = "SELECT t FROM Ticket t where t.assignedTo =:inUsername ORDER BY t.priorityNum, t.createdAt ASC"),
-        
-        @NamedQuery(name="Ticket.findTicketByStatus", query="SELECT t from Ticket t where t.status=:inStatus ORDER BY t.priorityNum, t.createdAt ASC")
-})
-
+    @NamedQuery(name = "Ticket.findAll", query = "SELECT t FROM Ticket t")
+    , @NamedQuery(name = "Ticket.findById", query = "SELECT t FROM Ticket t WHERE t.id=:id")
+    , @NamedQuery(name = "Ticket.findByTitle", query = "SELECT t FROM Ticket t WHERE t.title=:title")
+    , @NamedQuery(name = "Ticket.findByDescription", query = "SELECT t FROM Ticket t WHERE t.description=:description")
+    , @NamedQuery(name = "Ticket.findByReportedBy", query = "SELECT t FROM Ticket t WHERE t.reportedBy=:reportedBy")
+    , @NamedQuery(name = "Ticket.findByAssignedTo", query = "SELECT t FROM Ticket t WHERE t.assignedTo=:assignedTo AND t.status='OPEN'")
+    , @NamedQuery(name = "Ticket.findByStatus", query = "SELECT t FROM Ticket t WHERE t.status=:status")
+    , @NamedQuery(name = "Ticket.findByPriority", query = "SELECT t FROM Ticket t WHERE t.priority=:priority")
+    , @NamedQuery(name = "Ticket.findByCategory", query = "SELECT t FROM Ticket t WHERE t.category=:category")
+    , @NamedQuery(name = "Ticket.findByPriorityNum", query = "SELECT t FROM Ticket t WHERE t.priorityNum=:priorityNum")
+    , @NamedQuery(name = "Ticket.findByCreatedAt", query = "SELECT t FROM Ticket t WHERE t.createdAt=:createdAt")
+    , @NamedQuery(name = "Ticket.findByClosedAt", query = "SELECT t FROM Ticket t WHERE t.closedAt=:closedAt")})
 public class Ticket implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(name = "ASSIGNED_TO")
-    private String assignedTo;
-
-    private String category;
-
+    @Basic(optional = false)
+    @Column(name = "ID")
+    private Integer id;
+    @Size(max = 255)
+    @Column(name = "TITLE")
+    private String title;
+    @Size(max = 255)
+    @Column(name = "DESCRIPTION")
     private String description;
-
-    private String priority;
-
-    @Column(name="PRIORITY_NUM")
-    private int priorityNum;
-
+    @Size(max = 255)
     @Column(name = "REPORTED_BY")
     private String reportedBy;
-
+    @Size(max = 255)
+    @Column(name = "ASSIGNED_TO")
+    private String assignedTo;
+    @Size(max = 255)
+    @Column(name = "STATUS")
     private String status;
-
-    private String title;
-
-    //bi-directional many-to-one association to Location
+    @Size(max = 255)
+    @Column(name = "PRIORITY")
+    private String priority;
+    @Size(max = 255)
+    @Column(name = "CATEGORY")
+    private String category;
+    @Column(name = "PRIORITY_NUM")
+    private Integer priorityNum;
+    @Column(name = "CREATED_AT")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @Column(name = "CLOSED_AT")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date closedAt;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketId")
+    private List<Messages> messagesList;
+    @JoinColumn(name = "ALLOCATION_ID", referencedColumnName = "ID")
     @ManyToOne
-    @JoinColumn(name = "LOCATION_ID")
-    private Location location;
+    private Allocation allocationId;
+    @Column(name="CONTACT_PERSON")
+    private String contactPerson;
+    @Column(name="CONTACT_PHONE")
+    private String contactPhone;
 
-    //bi-directional many-to-one association to Message
-    @OneToMany(mappedBy = "ticket")
-    private List<Message> messages;
-    
-    @Column(name="CREATED_AT")
-    private Timestamp createdAt;
-    
-    @Column(name="CLOSED_AT")
-    private Timestamp closedAt;
-
-    public Timestamp getClosedAt() {
-        return closedAt;
+    public String getContactPerson() {
+        return contactPerson;
     }
 
-    public void setClosedAt(Timestamp closedAt) {
-        this.closedAt = closedAt;
+    public void setContactPerson(String contactPerson) {
+        this.contactPerson = contactPerson;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
+    public String getContactPhone() {
+        return contactPhone;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void setContactPhone(String contactPhone) {
+        this.contactPhone = contactPhone;
     }
 
-    /**
-     * Constructor
-     */
     public Ticket() {
     }
 
-    public int getId() {
-        return this.id;
-    }
-
-    public void setId(int id) {
+    public Ticket(Integer id) {
         this.id = id;
     }
 
-    public String getAssignedTo() {
-        return this.assignedTo;
+    public Integer getId() {
+        return id;
     }
 
-    public void setAssignedTo(String assignedTo) {
-        this.assignedTo = assignedTo;
-    }
-
-    public String getCategory() {
-        return this.category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPriority() {
-        return this.priority;
-    }
-
-    public void setPriority(String priority) {
-        this.priority = priority;
-    }
-
-    public String getReportedBy() {
-        return this.reportedBy;
-    }
-
-    public void setReportedBy(String reportedBy) {
-        this.reportedBy = reportedBy;
-    }
-
-    public String getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTitle() {
-        return this.title;
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public Location getLocation() {
-        return this.location;
+    public String getDescription() {
+        return description;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public List<Message> getMessages() {
-        return this.messages;
+    public String getReportedBy() {
+        return reportedBy;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setReportedBy(String reportedBy) {
+        this.reportedBy = reportedBy;
     }
 
-    public Message addMessage(Message message) {
-        getMessages().add(message);
-        message.setTicket(this);
-
-        return message;
+    public String getAssignedTo() {
+        return assignedTo;
     }
 
-    public Message removeMessage(Message message) {
-        getMessages().remove(message);
-        message.setTicket(null);
-
-        return message;
+    public void setAssignedTo(String assignedTo) {
+        this.assignedTo = assignedTo;
     }
 
-    public int getPriorityNum() {
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Integer getPriorityNum() {
         return priorityNum;
     }
 
-    public void setPriorityNum(int priorityNum) {
+    public void setPriorityNum(Integer priorityNum) {
         this.priorityNum = priorityNum;
     }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getClosedAt() {
+        return closedAt;
+    }
+
+    public void setClosedAt(Date closedAt) {
+        this.closedAt = closedAt;
+    }
+
+    @XmlTransient
+    public List<Messages> getMessagesList() {
+        return messagesList;
+    }
+
+    public void setMessagesList(List<Messages> messagesList) {
+        this.messagesList = messagesList;
+    }
+
+    public Allocation getAllocationId() {
+        return allocationId;
+    }
+
+    public void setAllocationId(Allocation allocationId) {
+        this.allocationId = allocationId;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Ticket)) {
+            return false;
+        }
+        Ticket other = (Ticket) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "hr.codiraona.model.Ticket[ id=" + id + " ]";
+    }
+    
 }

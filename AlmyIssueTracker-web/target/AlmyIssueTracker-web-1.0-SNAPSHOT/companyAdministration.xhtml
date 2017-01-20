@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <h:head>
+        <title>Administracija tvrtki i korisnika</title>
+        <style>
+            .detailsLink:hover{
+                color: activecaption !important;
+                font-weight: bold;
+            }
+            .itemLabel{
+                font-weight: bold;
+                font-size: small
+
+            }
+
+
+            .myPanelGrid.ui-panelgrid>*>tr,
+            .myPanelGrid.ui-panelgrid>*>tr>td{
+                border:none;
+            }
+
+            .inputFields{
+                border:none;
+                font-size:small;
+            }
+            .infoMessage{
+                background-color: blanchedalmond;
+            }
+
+        </style>
+    </h:head>
+    <h:body>
+        <f:view>
+            <h:form id="companyAdministration">
+                <p:growl autoUpdate="true" life="500" sticky="true" />
+                <ui:include src="pageFragments/authorizationToolbar.xhtml" />
+                <!--
+                <p:tabView id="adminTab">
+                    <p:tab id="categoriesAdministration" title="Administracija tvrtki">
+                        <ui:include src="pageFragments/admin/companyForm.xhtml"/>
+                        <ui:include src="pageFragments/admin/companyAllocationsForm.xhtml" />
+                    </p:tab>
+                    <p:tab id="usersAdministration" title="Administracija korisnika">
+                        <ui:include src="pageFragments/admin/userForm.xhtml" />
+                    </p:tab>
+
+
+                </p:tabView>
+                -->
+
+                <p:panel header="Administracija tvrtki"
+                         rendered="#{authBackingBean.admin}"
+                         style="border: none;"
+                         >
+                    <ui:include src="pageFragments/admin/companyForm.xhtml"/>
+                    <ui:include src="pageFragments/admin/companyAllocationsForm.xhtml" />   
+                    <ui:include src="pageFragments/admin/userForm.xhtml" />
+                </p:panel>
+            </h:form>
+
+        </f:view>
+
+    </h:body>
+</html>
+
+
+

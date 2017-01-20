@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:component id="categoriesCard">
+
+        
+                <h3><h:outputText value="Popis kategorija kvarova"/></h3>
+                <p:dataTable value="#{generalAdminBackingBean.categories}" 
+                             var="item"
+                             id="categoriesTable"
+                             widgetVar="categoriesTable"
+                             lazy="false"
+                             tableStyle="width:auto"
+                             rowKey="#{item.id}"
+                             emptyMessage="Ne postoji niti jedna kategorija za prijavu"
+                             
+                            >
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Ime kategorija"/>
+                        </f:facet>
+                        <h:outputText value="#{item.name}"  style="font-weight: bold"/>
+                    </p:column>
+                    <p:column>
+                        <f:facet name="header">
+                            <h:outputText value="Opis kategorije"/>
+                        </f:facet>
+                        <h:outputText value="#{item.description}"/>
+                    </p:column>
+                </p:dataTable>
+                
+                <p:commandButton value="Kreiraj novu kategoriju" 
+                                 style="margin-top: 20px"
+                                 onclick="PF('newCategoryDlg').show()"/>
+                
+                <p:dialog id="newCategoryDlg"
+                          widgetVar="newCategoryDlg"
+                          
+                          visible="false"
+                          
+                          >
+                            
+                    <p:panelGrid styleClass="myPanelGrid" columns="2">
+                        <h:outputLabel value="Ime kategorije:" for="categoryName" title="Unesite ime kategorije" />
+                        <h:inputText id="categoryName" value="#{generalAdminBackingBean.newCategory.name}"/>
+                        
+                        <h:outputLabel value="Opis kategorije:" for="categoryDescr" title="Unesite opis kategorije" />
+                        <h:inputText id="categoryDescr" value="#{generalAdminBackingBean.newCategory.description}"/>
+                    </p:panelGrid>
+                    
+                    <p:commandButton id="newCategoryBtn" 
+                                     action="#{generalAdminBackingBean.createNewCategory()}"
+                                     onsuccess="PF('newCategoryDlg').hide()"
+                                     update=":#{p:component('categoriesTable')}"
+                                     value="Spremi"
+                                     title="Spremi"
+                                     />
+                                     
+                </p:dialog>
+                
+                
+
+    </ui:component>
+</html>
+

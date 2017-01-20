@@ -1,132 +1,154 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package hr.codiraona.model;
 
 import java.io.Serializable;
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import java.util.List;
-
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * The persistent class for the COMPANY database table.
- * 
+ *
+ * @author iva.bilandzic
  */
-
 @Entity
+@Table(name = "COMPANY",schema = "TICKETING")
 @XmlRootElement
-@Table(schema="TICKETING", name="COMPANY")
 @NamedQueries({
-	@NamedQuery(name="Company.findAll", query="SELECT c FROM Company c")
-})
-
+    @NamedQuery(name = "Company.findAll", query = "SELECT c FROM Company c")
+    , @NamedQuery(name = "Company.findById", query = "SELECT c FROM Company c WHERE c.id = :id")
+    , @NamedQuery(name = "Company.findByName", query = "SELECT c FROM Company c WHERE c.name = :name")
+    , @NamedQuery(name = "Company.findByAddress", query = "SELECT c FROM Company c WHERE c.address = :address")
+    , @NamedQuery(name = "Company.findByCity", query = "SELECT c FROM Company c WHERE c.city = :city")
+    , @NamedQuery(name = "Company.findByCountry", query = "SELECT c FROM Company c WHERE c.country = :country")})
 public class Company implements Serializable {
-	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "ID")
+    private Integer id;
+    @Size(max = 255)
+    @Column(name = "NAME")
+    private String name;
+    @Size(max = 255)
+    @Column(name = "ADDRESS")
+    private String address;
+    @Size(max = 255)
+    @Column(name = "CITY")
+    private String city;
+    @Size(max = 255)
+    @Column(name = "COUNTRY")
+    private String country;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyId")
+    private List<Allocation> allocationList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "companyId")
+    private List<Users> usersList;
 
-	private String address;
+    public Company() {
+    }
 
-	private String city;
+    public Company(Integer id) {
+        this.id = id;
+    }
 
-	private String country;
+    public Integer getId() {
+        return id;
+    }
 
-	private String name;
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	//bi-directional many-to-one association to Allocation
-	@OneToMany(mappedBy="company")
-	private List<Allocation> allocations;
+    public String getName() {
+        return name;
+    }
 
-	//bi-directional many-to-one association to User
-	@OneToMany(mappedBy="company")
-	private List<User> users;
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Company() {
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public int getId() {
-		return this.id;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public String getAddress() {
-		return this.address;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public String getCountry() {
+        return country;
+    }
 
-	public String getCity() {
-		return this.city;
-	}
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    @XmlTransient
+    public List<Allocation> getAllocationList() {
+        return allocationList;
+    }
 
-	public String getCountry() {
-		return this.country;
-	}
+    public void setAllocationList(List<Allocation> allocationList) {
+        this.allocationList = allocationList;
+    }
 
-	public void setCountry(String country) {
-		this.country = country;
-	}
+    @XmlTransient
+    public List<Users> getUsersList() {
+        return usersList;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setUsersList(List<Users> usersList) {
+        this.usersList = usersList;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (id != null ? id.hashCode() : 0);
+        return hash;
+    }
 
-	public List<Allocation> getAllocations() {
-		return this.allocations;
-	}
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Company)) {
+            return false;
+        }
+        Company other = (Company) object;
+        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+            return false;
+        }
+        return true;
+    }
 
-	public void setAllocations(List<Allocation> allocations) {
-		this.allocations = allocations;
-	}
-
-	public Allocation addAllocation(Allocation allocation) {
-		getAllocations().add(allocation);
-		allocation.setCompany(this);
-
-		return allocation;
-	}
-
-	public Allocation removeAllocation(Allocation allocation) {
-		getAllocations().remove(allocation);
-		allocation.setCompany(null);
-
-		return allocation;
-	}
-
-	public List<User> getUsers() {
-		return this.users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
-	public User addUser(User user) {
-		getUsers().add(user);
-		user.setCompany(this);
-
-		return user;
-	}
-
-	public User removeUser(User user) {
-		getUsers().remove(user);
-		user.setCompany(null);
-
-		return user;
-	}
-
+    @Override
+    public String toString() {
+        return id.toString();
+    }
+    
 }

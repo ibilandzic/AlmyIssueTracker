@@ -5,7 +5,7 @@
  */
 package hr.codiraona.dao;
 
-import hr.codiraona.model.User;
+import hr.codiraona.model.Users;
 import javax.ejb.Local;
 
 /**
@@ -15,6 +15,6 @@ import javax.ejb.Local;
 @Local
 public interface AuthDAOLocal {
     
-    User login(String username, String password);
+    Users login(String username, String password);
     
 }

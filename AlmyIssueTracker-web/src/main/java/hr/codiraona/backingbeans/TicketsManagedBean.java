@@ -11,12 +11,12 @@ import hr.codiraona.dao.TicketAddDataDAOLocal;
 import hr.codiraona.dao.TicketDAOLocal;
 import hr.codiraona.dao.UserDAOLocal;
 import hr.codiraona.model.Category;
-import hr.codiraona.model.Location;
-import hr.codiraona.model.Message;
+import hr.codiraona.model.Locations;
+import hr.codiraona.model.Messages;
 import hr.codiraona.model.Priority;
 import hr.codiraona.model.Status;
 import hr.codiraona.model.Ticket;
-import hr.codiraona.model.User;
+import hr.codiraona.model.Users;
 import hr.codiraona.util.Constants;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -87,41 +87,41 @@ public class TicketsManagedBean implements Serializable {
 
     private List<Category> categories;
 
-    private List<User> employeeList;
+    private List<Users> employeeList;
 
-    private List<Location> locationList;
+    private List<Locations> locationList;
 
     private boolean isReadOnly;
 
     private int openTicketsSize;
 
-    public List<Location> getLocationList() {
+    public List<Locations> getLocationList() {
         return locationList;
     }
 
-    public void setLocationList(List<Location> locationList) {
+    public void setLocationList(List<Locations> locationList) {
         this.locationList = locationList;
     }
 
-    public List<User> getEmployeeList() {
+    public List<Users> getEmployeeList() {
         return employeeList;
     }
 
-    public void setEmployeeList(List<User> employeeList) {
+    public void setEmployeeList(List<Users> employeeList) {
         this.employeeList = employeeList;
     }
 
-    public Message getNewMessage() {
+    public Messages getNewMessage() {
         return newMessage;
     }
 
-    public void setNewMessage(Message newMessage) {
+    public void setNewMessage(Messages newMessage) {
         this.newMessage = newMessage;
     }
 
     private int closedTicketsSize;
 
-    private Message newMessage;
+    private Messages newMessage;
 
     public int getOpenTicketsSize() {
         return openTicketsSize;
@@ -203,7 +203,7 @@ public class TicketsManagedBean implements Serializable {
         this.selectedTicket = selectedTicket;
 
         log.log(Level.INFO, "Selected ticket: " + this.selectedTicket.getTitle());
-        log.log(Level.INFO, "Selected ticket: " + this.selectedTicket.getMessages().size());
+        log.log(Level.INFO, "Selected ticket message list size: " + this.selectedTicket.getMessagesList().size());
         
         FacesContext
                 .getCurrentInstance()
@@ -229,6 +229,7 @@ public class TicketsManagedBean implements Serializable {
         openTickets = ticketDao.getAllOpenedTickets();
         closedTickets = ticketDao.getAllClosedTickets();
         allTickets = ticketDao.getAllTickets();
+        log.log(Level.INFO,"Admin: "+authBean.isAdmin());
         categories = ticketAddDataDao.getAllCategories();
         priorities = ticketAddDataDao.getAllPriorities();
         statuses = ticketAddDataDao.getAllStatus();
@@ -236,8 +237,7 @@ public class TicketsManagedBean implements Serializable {
         isReadOnly = true;
         openTicketsSize = openTickets.size();
         closedTicketsSize = closedTickets.size();
-        newMessage = new Message();
-        log.log(Level.INFO, openTickets.get(0).getLocation().getName());
+        newMessage = new Messages();
         employeeList = userDao.getUsersByRole(Constants.EMPLOYEE_ROLE_NAME);
     }
 
@@ -247,11 +247,11 @@ public class TicketsManagedBean implements Serializable {
     public void createNewMessage() {
         log.log(Level.INFO, authBean.getUsername());
         newMessage.setPostedBy(authBean.getUsername());
-        newMessage.setTicket(selectedTicket);
+        newMessage.setTicketId(selectedTicket);
         newMessage.setPostedAt(new Timestamp(System.currentTimeMillis()));
-        selectedTicket.addMessage(newMessage);
+        selectedTicket.getMessagesList().add(newMessage);
         ticketDao.editTicket(selectedTicket);
-        newMessage = new Message();
+        newMessage = new Messages();
 
     }
 

@@ -1,0 +1,192 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <ui:component id="allocationsCard">
+
+
+        <h3><h:outputText value="Popis dostupnih alokacija"/></h3>
+        <p:dataTable value="#{generalAdminBackingBean.selectedLocation.allocationList}" 
+                     var="alo"
+                     id="allocationsTable"
+                     widgetVar="allocationsTable"
+                     lazy="false"
+                     tableStyle="width:auto"
+                     rowKey="#{alo.id}"
+                     
+                     selection="#{generalAdminBackingBean.selectedAllocation}"
+                     selectionMode="single"
+                     editable="true"
+                     editMode="row"
+                     emptyMessage="Ne postoji niti jedna alokacija"
+                     >
+            <p:ajax event="rowSelect" />
+            <p:ajax event="rowEdit" listener="#{generalAdminBackingBean.updateAllocation()}"/>
+            <p:column >
+                <f:facet name="header">
+                    <h:outputText value="ID lokacije"/>
+                </f:facet>
+                <h:outputText value="#{alo.id}"  style="font-weight: bold"/>
+
+            </p:column>
+            <p:column filterBy="#{alo.buildingName}" sortBy="#{alo.buildingName}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputText value="Zgrada"/>
+                </f:facet>
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{alo.buildingName}"  style="font-weight: bold"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:inputText value="#{alo.buildingName}"  style="font-weight: bold"/>
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column filterBy="#{alo.floor}" sortBy="#{alo.floor}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputText value="Dodjeljeni kat"/>
+                </f:facet>
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{alo.floor}"/> 
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:inputText value="#{alo.floor}"/> 
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column filterBy="#{alo.floorPart}" sortBy="#{alo.floorPart}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputText value="Dio kata"/>
+                </f:facet>
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{alo.floorPart}"/>  
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:selectOneMenu value="#{alo.floorPart}">
+                            <f:selectItem itemValue="#{null}" itemLabel="Nedefiniran"/>
+                            <f:selectItem itemValue="CIJELI" itemLabel="Cijeli kat"/>
+                            <f:selectItem itemValue="SJEVER" itemLabel="Sjeverni dio"/>
+                            <f:selectItem itemValue="JUG" itemLabel="Južni dio"/>
+                            <f:selectItem itemValue="ISTOK" itemLabel="Istočni dio"/>
+                            <f:selectItem itemValue="ZAPAD" itemLabel="Zapadni dio"/>
+                        </p:selectOneMenu> 
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column filterBy="#{alo.roomRange}" sortBy="#{alo.roomRange}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputText value="Raspon soba"/>
+                </f:facet>
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{alo.roomRange}"/>   
+                    </f:facet>
+                    <f:facet name="input">
+                        <h:inputText value="#{alo.roomRange}"/>
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column >
+                <f:facet name="header">
+                    <h:outputText value="Tvtka"/>
+                </f:facet>
+                <p:cellEditor>
+                    <f:facet name="output">
+                        <h:outputText value="#{alo.companyId}"/>
+                    </f:facet>
+                    <f:facet name="input">
+                        <p:selectOneMenu id="allocCompany"
+                                         value="#{alo.companyId}"
+                                         converter="#{companyConverterBean}">
+                            <f:selectItems value="#{generalAdminBackingBean.companies}" var="com" 
+                                           itemValue="#{com}" 
+                                           itemLabel="#{com.name}" 
+                                           noSelectionValue="true"
+
+                                           />
+                        </p:selectOneMenu>
+
+                    </f:facet>
+                </p:cellEditor>
+
+            </p:column>
+            <p:column style="width:32px" headerText="Editranje">
+                <p:rowEditor />
+            </p:column>
+        </p:dataTable>
+
+        <p:commandButton value="Kreiraj novu alokaciju" 
+                         style="margin-top: 20px"
+                         onclick="PF('newAllocationDlg').show()"/>
+
+        <p:commandButton value="Ukloni alokaciju"
+                         style="margin-top: 20px; margin-left: 10px"
+                         action="#{generalAdminBackingBean.deleteAllocation()}"
+                         update=":#{p:component('allocationsTable')}"
+                         />
+
+
+        <p:dialog id="newAllocationDlg"
+                  widgetVar="newAllocationDlg"
+                  visible="false"
+                  header="Alociranje prostora"
+                  >
+
+            <p:panelGrid styleClass="myPanelGrid" columns="2">
+
+                <h:outputLabel value="Oznaka zgrade:" for="buildingName" title="Unesite ime zgrade" />
+                <h:inputText id="buildingName" value="#{generalAdminBackingBean.newAllocation.buildingName}"/>
+
+                <h:outputLabel value="Kat:" for="floor" title="Kat" />
+                <h:inputText id="floor" value="#{generalAdminBackingBean.newAllocation.floor}"/>
+
+
+
+                <h:outputLabel value="Dio kata:" for="floorPart" title="Kat" />
+                <p:selectOneMenu id="floorPart" value="#{generalAdminBackingBean.newAllocation.floorPart}">
+                    <f:selectItem itemValue="#{null}" itemLabel="Nedefiniran"/>
+                    <f:selectItem itemValue="CIJELI" itemLabel="Cijeli kat"/>
+                    <f:selectItem itemValue="SJEVER" itemLabel="Sjeverni dio"/>
+                    <f:selectItem itemValue="JUG" itemLabel="Južni dio"/>
+                    <f:selectItem itemValue="ISTOK" itemLabel="Istočni dio"/>
+                    <f:selectItem itemValue="ZAPAD" itemLabel="Zapadni dio"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="Raspon soba:" for="room" title="Sobe" />
+                <h:inputText id="room" value="#{generalAdminBackingBean.newAllocation.roomRange}"/>
+
+                <h:outputLabel value="Dodjeljeno tvrtki:" for="allocCompany" title="Odaberite tvrtku s popisa" />
+                <p:selectOneMenu id="allocCompany"
+                                 value="#{generalAdminBackingBean.newAllocation.companyId}"
+                                 converter="#{companyConverterBean}">
+                    <!--
+                    <f:selectItem itemLabel="Nedodjeljeno" itemValue="#{null}"/>
+                    -->
+                    <f:selectItems value="#{generalAdminBackingBean.companies}" var="com" itemValue="#{com}" itemLabel="#{com.name}" noSelectionValue="true"/>
+                </p:selectOneMenu>
+            </p:panelGrid>
+
+            <p:commandButton id="newAllocationBtn" 
+                             action="#{generalAdminBackingBean.allocateSpace()}"
+                             onsuccess="PF('newAllocationDlg').hide()"
+                             update=":#{p:component('locationsTable')}"
+                             value="Spremi"
+                             title="Spremi"
+                             />
+
+        </p:dialog>
+
+
+    </ui:component>
+</html>
+

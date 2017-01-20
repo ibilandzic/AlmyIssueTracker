@@ -5,7 +5,7 @@
  */
 package hr.codiraona.dao;
 
-import hr.codiraona.model.Message;
+import hr.codiraona.model.Messages;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,9 +23,9 @@ public class MessageDAO implements MessageDAOLocal {
     @PersistenceContext(unitName = "AlmyIssueTracker")
     private EntityManager em;
 
-    Logger log = Logger.getLogger(this.getClass().getName());
+    private Logger log = Logger.getLogger(this.getClass().getName());
 
-    public boolean removeMessage(Message message) {
+    public boolean removeMessage(Messages message) {
 
         try {
             log.log(Level.INFO,"Removing message");
@@ -40,7 +40,7 @@ public class MessageDAO implements MessageDAOLocal {
 
 
     @Override
-    public boolean createMessage(Message message) {
+    public boolean createMessage(Messages message) {
        
         try{
             log.log(Level.INFO,"Creating message");
@@ -55,7 +55,7 @@ public class MessageDAO implements MessageDAOLocal {
     }
 
     @Override
-    public boolean editMessage(Message message) {
+    public boolean editMessage(Messages message) {
         try{
             log.log(Level.INFO,"Editing message");
             em.merge(message);
