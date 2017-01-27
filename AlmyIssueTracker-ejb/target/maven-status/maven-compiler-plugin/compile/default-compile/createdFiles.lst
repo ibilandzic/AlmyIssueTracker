@@ -17,6 +17,7 @@ hr\codiraona\dao\LocationDAOLocal.class
 hr\codiraona\model\State.class
 hr\codiraona\dao\TicketAddDataDAO.class
 hr\codiraona\model\State_.class
+hr\codiraona\util\EmailUtils.class
 hr\codiraona\model\Priority.class
 hr\codiraona\model\Allocation.class
 hr\codiraona\model\IssueCategory.class

@@ -24,19 +24,13 @@
                      editable="true"
                      editMode="row"
                      emptyMessage="Korisnici nisu pronađeni"
-                     scrollable="false"
-                     tableStyle="width:auto"
-
+                     style="width: auto; text-align: center; table-layout: auto"
+                     tableStyle="width: auto"
                      >
             <p:ajax event="rowSelect" />
             <p:ajax event="rowEdit" listener="#{companyBackingBean.editUser()}" update=":#{p:component('userTable')}"/>
             <!-- not allowed to change -->
-            <p:column sortBy="#{item.id}" filterBy="#{item.id}" filterMatchMode="contains">
-                <f:facet name="header">
-                    <h:outputText value="Id"/>
-                </f:facet>
-                <h:outputText value="#{item.id}"/>
-            </p:column>
+
             <p:column sortBy="#{item.username}" filterBy="#{item.username}" filterMatchMode="contains">
                 <f:facet name="header">
                     <h:outputText value="Korisničko ime"/>
@@ -123,19 +117,19 @@
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    <h:outputText value="Razina spritupa"/>
+                    <h:outputText value="Razina pristupa"/>
                 </f:facet>
 
                 <p:cellEditor>
                     <f:facet name="output">
-                       <h:outputText value="#{item.roleId.name}"/> 
+                        <h:outputText value="#{item.roleId.name}"/> 
                     </f:facet>
                     <f:facet name="input">
                         <h:selectOneMenu  value="#{item.roleId}" title="Role" 
-                                       converter="#{roleConverterBean}">
-                          
-                          <f:selectItems value="#{companyBackingBean.roles}" var="rol" itemLabel="#{rol.name}" itemValue="#{rol}" />
-                      </h:selectOneMenu>
+                                          converter="#{roleConverterBean}">
+
+                            <f:selectItems value="#{companyBackingBean.roles}" var="rol" itemLabel="#{rol.name}" itemValue="#{rol}" />
+                        </h:selectOneMenu>
                     </f:facet>
                 </p:cellEditor>
             </p:column>
@@ -143,17 +137,25 @@
                 <p:rowEditor />
             </p:column>
 
-            <f:facet name="footer">
-                <p:commandButton id="createUserBtn" 
-                                 onclick="PF('userDlg').show()" 
-                                 value="Dodaj"/>
-                <!-- delete command button -->
-                <p:commandButton id="deleteUserBtn"  
-                                 value="Obriši" 
-                                 action="#{companyBackingBean.deleteUser()}"
-                                 update=":#{p:component('userTable')}"/>
-            </f:facet>
+
         </p:dataTable>
+
+        <!-- create/delete operation buttons -->
+        <h:panelGrid columns="2" 
+                     cellpadding="5px" 
+                     styleClass="myPanelGrid"
+                     >
+            <p:commandButton id="createUserBtn" 
+                             onclick="PF('userDlg').show()" 
+                             value="Dodaj"
+                             disabled="#{companyBackingBean.selectedCompany eq null}"/>
+            <!-- delete command button -->
+            <p:commandButton id="deleteUserBtn"  
+                             value="Obriši" 
+                             action="#{companyBackingBean.deleteUser()}"
+                             update=":#{p:component('userTable')}"
+                             disabled="#{companyBackingBean.selectedCompany eq null}"/>      
+        </h:panelGrid>
 
         <!-- command button for creation and deletion of users in specific company -->
 
@@ -161,7 +163,14 @@
         <!-- new company dialog -->
 
 
-        <p:dialog header="Kreiraj novog korisnika" widgetVar="userDlg" minHeight="40" visible="false" id="userDlg">
+        <p:dialog header="Kreiraj novog korisnika" 
+                  widgetVar="userDlg"
+                  minHeight="40" 
+                  visible="false" 
+                  id="userDlg"
+                  modal="true"
+                  onHide="#{companyBackingBean.initializeUserForm()}"
+                  >
 
             <h:panelGrid columns="2">
 

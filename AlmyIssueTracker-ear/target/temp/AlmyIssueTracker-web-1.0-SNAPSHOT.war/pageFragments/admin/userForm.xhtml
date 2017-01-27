@@ -25,18 +25,14 @@
                      editMode="row"
                      emptyMessage="Korisnici nisu pronađeni"
                      scrollable="false"
-                     tableStyle="width:auto"
+                     style="width: auto; text-align: center"
+                     resizableColumns="true"
 
                      >
             <p:ajax event="rowSelect" />
             <p:ajax event="rowEdit" listener="#{companyBackingBean.editUser()}" update=":#{p:component('userTable')}"/>
             <!-- not allowed to change -->
-            <p:column sortBy="#{item.id}" filterBy="#{item.id}" filterMatchMode="contains">
-                <f:facet name="header">
-                    <h:outputText value="Id"/>
-                </f:facet>
-                <h:outputText value="#{item.id}"/>
-            </p:column>
+
             <p:column sortBy="#{item.username}" filterBy="#{item.username}" filterMatchMode="contains">
                 <f:facet name="header">
                     <h:outputText value="Korisničko ime"/>
@@ -123,7 +119,7 @@
             </p:column>
             <p:column>
                 <f:facet name="header">
-                    <h:outputText value="Razina spritupa"/>
+                    <h:outputText value="Razina pristupa"/>
                 </f:facet>
 
                 <p:cellEditor>

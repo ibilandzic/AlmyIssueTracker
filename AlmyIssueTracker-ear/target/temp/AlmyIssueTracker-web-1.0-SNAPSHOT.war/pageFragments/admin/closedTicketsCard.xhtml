@@ -14,11 +14,13 @@
             }
             .itemLabel{
                 font-weight: bold;
-                font-size: small
-
+                font-size:small;
             }
-
-
+            
+            .itemValue{
+                font-size: smaller;
+            }
+            
             .myPanelGrid.ui-panelgrid>*>tr,
             .myPanelGrid.ui-panelgrid>*>tr>td{
                 border:none;
@@ -31,6 +33,9 @@
             .infoMessage{
                 background-color: blanchedalmond;
             }
+            .ui-datagrid-no-border>.ui-datagrid-content {
+                border: none;
+            }
 
         </style>
         
@@ -41,15 +46,17 @@
                     id="closedTicketGrid"
                     emptyMessage="Nema zatvorenih prijava"
                     value="#{ticketsManagedBean.closedTickets}"
-                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                    rowsPerPageTemplate="2,3"
+                    paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                    rowsPerPageTemplate="2,4,6"
                     paginator="true"
                     var="item"
-                    
+                    columns="2"
+                    rows="2"
+                    styleClass="ui-datagrid-no-border"
                     >
             <p:panelGrid columns="2">
-                <p:outputLabel value="Id prijave:" for="id" styleClass="itemLabel"/>
-                <h:outputText id="id" value="#{item.id}" title="Id"/>
+                <p:outputLabel value="ID prijave:" for="id" styleClass="itemLabel"/>
+                <h:outputText id="id" value="#{item.id}" title="Id" />
 
                 <p:outputLabel value="Naslov:" for="title" styleClass="itemLabel" />
                 <h:outputText id="title" value="#{item.title}" title="Title"/>
@@ -89,6 +96,23 @@
                 <p:selectOneMenu id="status" value="#{item.status}">
                     <f:selectItems value="#{ticketsManagedBean.statuses}" var="sta" itemLabel="#{sta.name}" itemValue="#{sta.name}"/> 
                 </p:selectOneMenu>
+                
+                <p:outputLabel for="createdAt" value="Prijava otvorena:" styleClass="itemLabel"/>
+                <h:outputText id="createdAt" value="#{item.createdAt}">
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" dateStyle="both" />
+                </h:outputText>
+                
+                <p:outputLabel for="closedAt" value="Prijava zatvorena:" styleClass="itemLabel"/>
+                <h:outputText id="closedAt" value="#{item.closedAt}" >
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" dateStyle="both" />
+                </h:outputText>
+                
+                <p:outputLabel for="elapsedTime" value="Vrijeme riješavanja (dani):" styleClass="itemLabel"/>
+                <h:outputText id="elapsedTime" value="#{(item.closedAt.time - item.createdAt.time)/(1000*24*60*60)}">
+                    <f:convertNumber maxFractionDigits="1" />
+                </h:outputText>
+                
+                
 
                 
 
@@ -96,7 +120,7 @@
             <p:spacer height="5"/>
             <p:commandLink action="#{ticketsManagedBean.setSelectedTicket(item)}" 
                            value="Odaberi prijavu" 
-                           update=":#{p:component('messageList')}"
+                           update=":#{p:component('messageList')} :#{p:component('addMessageBtn')} :#{p:component('ticketId')}"
                            styleClass="detailsLink"
                            />
             <p:spacer width="10"/>

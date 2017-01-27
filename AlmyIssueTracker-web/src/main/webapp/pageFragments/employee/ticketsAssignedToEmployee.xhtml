@@ -26,6 +26,9 @@
             .infoMessage{
                 background-color: blanchedalmond;
             }
+            .ui-datagrid-no-border>.ui-datagrid-content {
+                border: none;
+            }
 
         </style>
 
@@ -39,15 +42,13 @@
                     rowsPerPageTemplate="3,6"
                     paginator="true"
                     var="item"
-                    rows="1"
-                    style="border: none"
-
+                    styleClass="ui-datagrid-no-border"
                     >
             <p:panelGrid columns="2"
                          style="border: none; max-height: 300px">
 
                 <p:outputLabel value="Naslov:" for="title" styleClass="itemLabel" />
-                <h:outputText id="title" value="#{item.title}" title="Nalsov" />
+                <h:outputText id="title" value="#{item.title}" title="Naslov" />
 
                 <p:outputLabel value="Opis:" for="description" styleClass="itemLabel"/>
                 <h:outputText id="description" value="#{item.description}" title="Kratki opis"/>
@@ -71,25 +72,50 @@
                 <h:outputText id="priority" value="#{item.priority}" />
 
                 <p:outputLabel value="Status:" for="status" styleClass="itemLabel"/>
-                <h:outputText id="status" value="#{item.status}"/>
+
+                <p:selectOneMenu value="#{item.status}" id="status">
+                    <f:selectItems value="#{employeeBackingBean.statusList}" var="status" 
+                                   itemValue="#{status.name}"
+                                   itemLabel="#{status.name}"
+                                   />
+                </p:selectOneMenu>
+                
+                <p:outputLabel value="Dodjeljeno:" for="assignedTo" styleClass="itemLabel"/>
+                <p:selectOneMenu value="#{item.assignedTo}" id="assignedTo" >
+                    <f:selectItem itemValue="#{item.assignedTo}" itemLabel="#{authBackingBean.currentUser.firstName} #{authBackingBean.currentUser.lastName}" />
+                    <f:selectItems value="#{employeeBackingBean.adminList}" var="usr" itemValue="#{usr.username}" itemLabel="#{usr.firstName} #{usr.lastName}" />
+                </p:selectOneMenu>
 
                 <p:outputLabel for="contactPerson" value="Kontakt osoba" styleClass="itemLabel" />
                 <h:outputText id="contactPerson" value="#{item.contactPerson}" />
-                
+
                 <p:outputLabel for="contactPhone" value="Kontakt telefon:" styleClass="itemLabel" />
                 <h:outputText id="contactPhone" value="#{item.contactPhone}" />
-                
+
                 <p:outputLabel value="Prijava kreirana:" styleClass="itemLabel" for="openedAt" />
                 <h:outputText id="openedAt" value="#{item.createdAt}">
                     <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
                 </h:outputText>
 
-                <p:commandLink action="#{employeeBackingBean.setSelectedTicket(item)}" 
-                               update=":#{p:component('messageList')} :#{p:component('addMessageBtn')}" 
-                               value="Odaberi prijavu" />
             </p:panelGrid>
+
+
+            <p:spacer width="10px" />
+            <p:commandLink action="#{employeeBackingBean.setSelectedTicket(item)}" 
+                           value="Odaberi prijavu" 
+                           update=":#{p:component('messageList')} :#{p:component('addMessageBtn')}"
+                           styleClass="detailsLink"
+                           />
+            <p:spacer width="10"/>
+
+            <p:commandLink value="Editiraj prijavu"
+                           styleClass="detailsLink"
+                           action="#{employeeBackingBean.editTicket(item)}"
+                           update=":#{p:component('myAssignmentGrid')}"
+                           />
+
             <p:spacer height="20px" />
-            
+        </p:dataGrid>
     </ui:component>
 </html>
 

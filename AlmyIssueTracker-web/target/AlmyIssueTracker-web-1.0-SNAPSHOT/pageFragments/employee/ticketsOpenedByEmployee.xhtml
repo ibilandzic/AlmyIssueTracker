@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:component id="myTicketsCard">
+        <style>
+            .detailsLink:hover{
+                color: activecaption !important;
+                font-weight: bold;
+            }
+            .itemLabel{
+                font-weight: bold;
+                font-size: small
+
+            }
+
+            .inputFields{
+                border:none;
+                font-size:small;
+            }
+            .infoMessage{
+                background-color: blanchedalmond;
+            }
+
+            .ui-datagrid-no-border>.ui-datagrid-content {
+                border: none;
+            }
+
+        </style>
+
+
+        <!-- open tickets grid -->
+        <p:dataGrid lazy="false"
+                    id="myTicketGrid"
+                    emptyMessage="Niste otvorili niti jednu prijavu"
+                    value="#{authBackingBean.ticketOpenedByUser}"
+                    paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                    rowsPerPageTemplate="2,4,6"
+                    paginator="true"
+                    var="item"
+                    columns="2"
+                    rows="2"
+                    styleClass="ui-datagrid-no-border"
+
+                    >
+            <p:panelGrid columns="2"
+                         
+                         >
+
+                <p:outputLabel value="Naslov:" for="title" styleClass="itemLabel" />
+                <h:outputText id="title" value="#{item.title}" title="Nalsov"/>
+
+                <p:outputLabel value="Opis:" for="description" styleClass="itemLabel"/>
+                <h:inputTextarea id="description" value="#{item.description}" title="Kratki opis" 
+                                 styleClass="inputFields"
+                                 readonly="true"
+
+                                 />
+
+
+                <p:outputLabel value="Lokacija:" for="location" styleClass="itemLabel"/>  
+                <h:outputText id="location" value="#{item.allocationId.locationId.name}" title="Lokacija"/>
+
+                <p:outputLabel value="Zgrada:" for="building" styleClass="itemLabel"/>
+                <h:outputText id="building" value="#{item.allocationId.buildingName}"/>
+
+                <p:outputLabel value="Kat:" for="floor" styleClass="itemLabel"/>
+                <h:outputText id="floor" value="#{item.allocationId.floor}"/>
+
+                <p:outputLabel value="Dio kata:" for="floorPart" styleClass="itemLabel"/>
+                <h:outputText id="floorPart" value="#{item.allocationId.floorPart}"/>
+
+                <p:outputLabel value="Kategorija:" for="category" styleClass="itemLabel"/>
+                <h:outputText id="category" value="#{item.category}" />
+
+                <p:outputLabel value="Prioritet:" for="priority" styleClass="itemLabel"/>          
+                <h:outputText id="priority" value="#{item.priority}" />
+
+                <p:outputLabel value="Status:" for="status" styleClass="itemLabel"/>
+                <h:outputText id="status" 
+                              value="#{item.status eq 'OPEN' and item.assignedTo ne null ? 'RIJEŠAVA SE':item.status}"
+                              />
+
+
+            </p:panelGrid>
+            <p:spacer height="5"/>
+            <p:commandLink action="#{employeeBackingBean.setSelectedTicket(item)}" 
+                           value="Odaberi prijavu" 
+                           update=":#{p:component('messageList')} :#{p:component('addMessageBtn')}"
+                           styleClass="detailsLink"
+                           />
+
+            <p:spacer height="20px" />
+            <f:facet name="footer">
+                <p:commandButton value="Nova prijava"
+                                 onclick="PF('newTicketDlg').show()" />
+            </f:facet>
+
+
+
+        </p:dataGrid>
+        <p:dialog id="newTicketDlg"
+                  widgetVar="newTicketDlg"
+                  closeOnEscape="true"
+                  header="Prijavite problem:"
+                  modal="true"
+                  showHeader="true"
+                  >
+            <p:panelGrid columns="2">
+                <p:outputLabel value="Naslov prijave:" for="inTitle" />
+                <p:inputText id="inTitle" value="#{employeeBackingBean.newTicket.title}" title="Naslov" />
+                <p:outputLabel value="Opis:" for="inDescription" />
+                <p:inputTextarea id="inDescription" autoResize="true" maxlength="255" 
+                                 value="#{employeeBackingBean.newTicket.description}" 
+                                 placeholder="Kratki opis problema..."
+                                 />
+                <p:outputLabel value="Tvrtka:" for="inCompany" />
+                <p:selectOneMenu value="#{employeeBackingBean.selectedCompany}"
+                                 id="inCompany"
+                                 converter="#{companyConverterBean}"
+                                 rendered="#{employeeBackingBean.selectedCompany ne null}"
+                                 >
+                    <p:ajax update="inAlloc" />
+                    <f:selectItems value="#{employeeBackingBean.companyList}" 
+                                   var="com" 
+                                   itemLabel="#{com.name}"
+                                   itemValue="#{com}"
+
+                                   />
+                </p:selectOneMenu>
+
+                <p:outputLabel value="Alokacija:" for="inAlloc" />
+                <p:selectOneMenu value="#{employeeBackingBean.newTicket.allocationId}" 
+                                 id="inAlloc" 
+                                 converter="#{allocationConverterBean}"
+                                 rendered="#{employeeBackingBean.selectedCompany ne null}"
+                                 >
+
+                    <f:selectItems value="#{employeeBackingBean.selectedCompany.allocationList}"
+                                   var="alloc"
+                                   itemValue="#{alloc}"
+                                   itemLabel="Lokacija: #{alloc.locationId.name}/
+                                   Zgrada: #{alloc.buildingName}/
+                                   Kat: #{alloc.floor}/
+                                   Soba: #{alloc.roomRange}"
+                                   />
+                </p:selectOneMenu>
+                <p:outputLabel value="Kategorija:" for="inCategories" />
+                <p:selectOneMenu id="inCategories" value="#{employeeBackingBean.newTicket.category}" >
+                    <f:selectItems value="#{employeeBackingBean.ticketCategory}" 
+                                   var="cat" 
+                                   itemValue="#{cat.name}"
+                                   itemLabel="#{cat.name}"
+                                   />
+                </p:selectOneMenu>
+
+                <p:outputLabel value="Prioritet:" for="inPriority" />
+                <p:selectOneMenu id="inPriority" value="#{employeeBackingBean.newTicket.priority}" >
+                    <f:selectItems value="#{employeeBackingBean.ticketPriority}" 
+                                   var="pri" 
+                                   itemValue="#{pri.name}"
+                                   itemLabel="#{pri.name}"
+                                   />
+                </p:selectOneMenu>
+                <p:outputLabel for="contactPerson" value="Kontakt osoba:" />
+                <h:inputText id="contactPerson" value="#{employeeBackingBean.newTicket.contactPerson}" />
+
+                <p:outputLabel for="contactPhone" value="Kontakt telefon:" />
+                <h:inputText id="contactPhone" value="#{employeeBackingBean.newTicket.contactPhone}" />
+
+                <f:facet name="footer">
+                    <p:commandButton action="#{employeeBackingBean.createNewTicket()}"
+                                     update=":#{p:component('myTicketGrid')}"
+                                     value="Kreiraj prijavu"
+                                     onsuccess="PF('newTicketDlg').hide()"
+                                     />
+                </f:facet>
+            </p:panelGrid>
+        </p:dialog>
+
+    </ui:component>
+</html>
+

@@ -18,7 +18,8 @@
                          rowKey="#{item.id}"
                          editable="true"
                          editMode="row"
-                         style="width: auto"
+                         style="width: auto; text-align: center"
+                         tableStyle="width:auto"
                          >
                 <p:ajax event="rowSelect"  update=":#{p:component('allocTable')} :#{p:component('userTable')}"/>
                 <p:ajax event="rowEdit" listener="#{companyBackingBean.editCompany()}" update=":#{p:component('companyTable')}"/>

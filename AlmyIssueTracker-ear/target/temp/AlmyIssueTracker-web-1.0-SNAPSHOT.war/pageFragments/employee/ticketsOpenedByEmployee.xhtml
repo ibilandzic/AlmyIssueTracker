@@ -31,6 +31,10 @@
             .infoMessage{
                 background-color: blanchedalmond;
             }
+            
+            .ui-datagrid-no-border>.ui-datagrid-content {
+                border: none;
+            }
 
         </style>
 
@@ -44,8 +48,9 @@
                     rowsPerPageTemplate="3,6"
                     paginator="true"
                     var="item"
-                    rows="1"
-                    style="border: none"
+                   
+                    styleClass="ui-datagrid-no-border"
+                    
                     >
             <p:panelGrid columns="2"
                          style="border: none">
@@ -78,7 +83,10 @@
                 <h:outputText id="status" 
                               value="#{item.status eq 'OPEN' and item.assignedTo ne null ? 'RIJEŠAVA SE':item.status}"
                               />
+            
+                
             </p:panelGrid>
+
             <p:spacer height="20px" />
             <f:facet name="footer">
                 <p:commandButton value="Nova prijava"
@@ -97,31 +105,46 @@
                   >
             <p:panelGrid columns="2">
                 <p:outputLabel value="Naslov prijave:" for="inTitle" />
-                <p:inputText id="inTitle" value="#{userPageBackingBean.newTicket.title}" title="Naslov" />
+                <p:inputText id="inTitle" value="#{employeeBackingBean.newTicket.title}" title="Naslov" />
                 <p:outputLabel value="Opis:" for="inDescription" />
                 <p:inputTextarea id="inDescription" autoResize="true" maxlength="255" 
-                                 value="#{userPageBackingBean.newTicket.description}" 
+                                 value="#{employeeBackingBean.newTicket.description}" 
                                  placeholder="Kratki opis problema..."
                                  />
-                <p:outputLabel value="Lokacija:" for="inLocation" />
-                <p:selectOneMenu value="#{userPageBackingBean.newTicket.allocationId}" 
-                                 id="inLocation" 
-                                 converter="#{allocationConverterBean}"
+                <p:outputLabel value="Tvrtka:" for="inCompany" />
+                <p:selectOneMenu value="#{employeeBackingBean.selectedCompany}"
+                                 id="inCompany"
+                                 converter="#{companyConverterBean}"
+                                 rendered="#{employeeBackingBean.selectedCompany ne null}"
                                  >
-                    <f:selectItems value="#{authBackingBean.currentUser.companyId.allocationList}"
+                    <p:ajax update="inAlloc" />
+                    <f:selectItems value="#{employeeBackingBean.companyList}" 
+                                   var="com" 
+                                   itemLabel="#{com.name}"
+                                   itemValue="#{com}"
+                                   
+                                   />
+                </p:selectOneMenu>
+                
+                <p:outputLabel value="Alokacija:" for="inAlloc" />
+                <p:selectOneMenu value="#{employeeBackingBean.newTicket.allocationId}" 
+                                 id="inAlloc" 
+                                 converter="#{allocationConverterBean}"
+                                 rendered="#{employeeBackingBean.selectedCompany ne null}"
+                                 >
+                    
+                    <f:selectItems value="#{employeeBackingBean.selectedCompany.allocationList}"
                                    var="alloc"
                                    itemValue="#{alloc}"
-                                   itemDescription="Lokacija: #{alloc.locationId.name}
-                                   Zgrada:"
                                    itemLabel="Lokacija: #{alloc.locationId.name}/
                                    Zgrada: #{alloc.buildingName}/
-                                   Kat:#{alloc.floor}/
+                                   Kat: #{alloc.floor}/
                                    Soba: #{alloc.roomRange}"
                                    />
                 </p:selectOneMenu>
                 <p:outputLabel value="Kategorija:" for="inCategories" />
-                <p:selectOneMenu id="inCategories" value="#{userPageBackingBean.newTicket.category}" >
-                    <f:selectItems value="#{userPageBackingBean.ticketCategory}" 
+                <p:selectOneMenu id="inCategories" value="#{employeeBackingBean.newTicket.category}" >
+                    <f:selectItems value="#{employeeBackingBean.ticketCategory}" 
                                    var="cat" 
                                    itemValue="#{cat.name}"
                                    itemLabel="#{cat.name}"
@@ -129,21 +152,21 @@
                 </p:selectOneMenu>
 
                 <p:outputLabel value="Prioritet:" for="inPriority" />
-                <p:selectOneMenu id="inPriority" value="#{userPageBackingBean.newTicket.priority}" >
-                    <f:selectItems value="#{userPageBackingBean.ticketPriority}" 
+                <p:selectOneMenu id="inPriority" value="#{employeeBackingBean.newTicket.priority}" >
+                    <f:selectItems value="#{employeeBackingBean.ticketPriority}" 
                                    var="pri" 
                                    itemValue="#{pri.name}"
                                    itemLabel="#{pri.name}"
                                    />
                 </p:selectOneMenu>
                 <p:outputLabel for="contactPerson" value="Kontakt osoba:" />
-                <h:inputText id="contactPerson" value="#{userPageBackingBean.newTicket.contactPerson}" />
+                <h:inputText id="contactPerson" value="#{employeeBackingBean.newTicket.contactPerson}" />
 
                 <p:outputLabel for="contactPhone" value="Kontakt telefon:" />
-                <h:inputText id="contactPhone" value="#{userPageBackingBean.newTicket.contactPhone}" />
+                <h:inputText id="contactPhone" value="#{employeeBackingBean.newTicket.contactPhone}" />
 
                 <f:facet name="footer">
-                    <p:commandButton action="#{userPageBackingBean.createNewTicket()}"
+                    <p:commandButton action="#{employeeBackingBean.createNewTicket()}"
                                      update=":#{p:component('myTicketGrid')}"
                                      value="Kreiraj prijavu"
                                      />

@@ -5,6 +5,7 @@
  */
 package hr.codiraona.utils;
 
+import java.io.Serializable;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpSession;
  * @author iva.bilandzic
  */
 
-    public class SessionUtils {
+    public class SessionUtils implements Serializable{
 
 	public static HttpSession getSession() {
 		return (HttpSession) FacesContext.getCurrentInstance()

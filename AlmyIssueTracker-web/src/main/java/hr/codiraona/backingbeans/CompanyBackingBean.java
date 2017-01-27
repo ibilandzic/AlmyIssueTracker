@@ -60,10 +60,18 @@ public class CompanyBackingBean implements Serializable {
     private List<Users> users;
 
 
+    /**
+     * returns list of users in selected company
+     * @return 
+     */
     public List<Users> getUsers() {
         return selectedCompany.getUsersList();
     }
 
+    /**
+     * sets user list to display
+     * @param users 
+     */
     public void setUsers(List<Users> users) {
         this.users = users;
     }
@@ -76,10 +84,18 @@ public class CompanyBackingBean implements Serializable {
     
     private List<Allocation> availableAllocations;
 
+    /**
+     * return available locations that can be alocated
+     * @return 
+     */
     public List<Allocation> getAvailableAllocations() {
         return availableAllocations;
     }
 
+    /**
+     * sets the list of available locations that user can choose from
+     * @param availableAllocations 
+     */
     public void setAvailableAllocations(List<Allocation> availableAllocations) {
         this.availableAllocations = availableAllocations;
     }
@@ -136,7 +152,7 @@ public class CompanyBackingBean implements Serializable {
      * @param selectedUser
      */
     public void setSelectedUser(Users selectedUser) {
-        log.log(Level.INFO,"Role:"+selectedUser.getRoleId().getName());
+        
         this.selectedUser = selectedUser;
     }
 
@@ -146,6 +162,7 @@ public class CompanyBackingBean implements Serializable {
      * @return
      */
     public Company getSelectedCompany() {
+        
         return selectedCompany;
     }
 
@@ -155,7 +172,7 @@ public class CompanyBackingBean implements Serializable {
      * @param selectedCompany
      */
     public void setSelectedCompany(Company selectedCompany) {
-        
+    
         this.selectedCompany = selectedCompany;
     }
 
@@ -186,8 +203,8 @@ public class CompanyBackingBean implements Serializable {
     @PostConstruct
     public void init() {
         companies = companyDao.getAllCompanies();
-        selectedCompany = companies.get(0);
-        users = selectedCompany.getUsersList();
+        //selectedCompany = companies.get(0);
+        //users = selectedCompany.getUsersList();
         roles = roleDao.getAllRoles();
         availableAllocations = allocationDao.getUnassignedAllocations();
         initCompany();
@@ -299,8 +316,14 @@ public class CompanyBackingBean implements Serializable {
         } else {
             log.log(Level.WARNING, "User not created");
         }
+        //initialize user form
+        initializeUserForm();
         
         
+    }
+    
+    public void initializeUserForm(){
+        user = new Users();
     }
     
     public void detachAllocation(Allocation aloc){

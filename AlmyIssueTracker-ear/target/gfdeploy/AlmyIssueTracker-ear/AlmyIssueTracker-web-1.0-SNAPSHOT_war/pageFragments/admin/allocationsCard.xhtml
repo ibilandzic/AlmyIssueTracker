@@ -127,12 +127,18 @@
 
         <p:commandButton value="Kreiraj novu alokaciju" 
                          style="margin-top: 20px"
-                         onclick="PF('newAllocationDlg').show()"/>
+                         onclick="PF('newAllocationDlg').show()"
+                         id="newAllocBtn"
+                         widgetVar="newAllocBtn"
+                         disabled="#{generalAdminBackingBean.selectedLocation eq null}"/>
 
         <p:commandButton value="Ukloni alokaciju"
                          style="margin-top: 20px; margin-left: 10px"
                          action="#{generalAdminBackingBean.deleteAllocation()}"
                          update=":#{p:component('allocationsTable')}"
+                         id="deleteAllocBtn"
+                         widgetVar="deleteAllocBtn"
+                         disabled="#{generalAdminBackingBean.selectedLocation eq null}"
                          />
 
 

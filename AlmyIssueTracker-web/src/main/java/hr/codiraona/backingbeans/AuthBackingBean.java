@@ -11,6 +11,7 @@ import hr.codiraona.model.Ticket;
 import hr.codiraona.model.Users;
 import hr.codiraona.utils.MessageUtils;
 import hr.codiraona.utils.SessionUtils;
+import java.io.IOException;
 import javax.inject.Named;
 
 import java.io.Serializable;
@@ -22,6 +23,8 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 
 
@@ -127,15 +130,36 @@ public class AuthBackingBean implements Serializable {
             HttpSession session = SessionUtils.getSession();
             session.setAttribute("username", user.getUsername());
             getTickets(currentUser.getUsername());
-            log.log(Level.INFO,"Session id: "+session.getId());
+            log.log(Level.INFO,"Redirecting...");
+            redirectToPage();
             
         } else {
-            
             SessionUtils.getSession().invalidate();
             MessageUtils.showResponseMessage("Pogrešni korisnički podaci.", "Pogresni podaci");
             setCurrentUser(null);
             setIsRegistered(false);
         }
+    }
+    
+    private void redirectToPage(){
+        String redirectedTo = "";
+        switch(currentUser.getRoleId().getName()){
+            case "admin": redirectedTo = "tickets.xhtml";
+            break;
+            case "user": redirectedTo = "userPage.xhtml";
+            break;
+            case "employee": redirectedTo = "employeePage.xhtml";
+            break;
+        }
+        
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        try{
+          context.redirect(context.getRequestContextPath()+"/" + redirectedTo);  
+        }
+        catch(IOException e){
+            log.log(Level.WARNING,"Page not found");
+        }
+        
     }
 
     
@@ -182,7 +206,7 @@ public class AuthBackingBean implements Serializable {
         }
     }
     
-    private void getTickets(String username) {
+    public void getTickets(String username) {
         if (currentUser!=null){
             ticketAssignedToUser = userDao.getTicketsAssignedToUser(username);
             ticketOpenedByUser = userDao.getTicketsReportedByUser(username);

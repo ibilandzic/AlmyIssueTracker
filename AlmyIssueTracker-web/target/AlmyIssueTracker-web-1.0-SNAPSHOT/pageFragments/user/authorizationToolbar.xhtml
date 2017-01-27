@@ -11,6 +11,9 @@
                    style="border: none">
 
             <f:facet name="options">
+                <h:outputText value="Trenutni korisnik: #{authBackingBean.currentUser.username}"
+                              rendered="#{authBackingBean.isRegistered}"
+                              />
                 <p:commandButton style="max-height: 30px; font-size: 12px"
                                  value="Odjava"  
                                  action="#{authBackingBean.logout()}"

@@ -31,6 +31,9 @@
             .infoMessage{
                 background-color: blanchedalmond;
             }
+            .ui-datagrid-no-border>.ui-datagrid-content {
+                border: none;
+            }
 
         </style>
     </h:head>
@@ -38,15 +41,23 @@
         <f:view>
             <h:form id="employeeForm">
                 <p:growl autoUpdate="true" life="500" sticky="true" />
-                <ui:include src="pageFragments/user/authorizationToolbar.xhtml" />
-                <p:panel rendered="#{authBackingBean.employee}" 
-                         id="employeeOperations"
-                         header="Moji zadaci"
+                <ui:include src="pageFragments/authorizationToolbar.xhtml" />
+                <p:tabView rendered="#{authBackingBean.employee or authBackingBean.admin}"
+                           style="border:none"
+                           >
+
+                    <p:tab title="Moji zadaci">
+                        <ui:include src="/pageFragments/employee/ticketsAssignedToEmployee.xhtml" />
                          
-                         >
-                    <ui:include src="/pageFragments/employee/ticketsAssignedToUser.xhtml" />
+                    </p:tab>
+                    <p:tab title="Moje otvorene prijave" >
+                        <ui:include src="pageFragments/employee/ticketsOpenedByEmployee.xhtml" />
+                    </p:tab>
                     
-                </p:panel>
+                    
+                </p:tabView>
+                <ui:include src="pageFragments/employee/messageList.xhtml" />
+
             </h:form>
 
         </f:view>

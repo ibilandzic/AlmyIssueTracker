@@ -39,19 +39,7 @@
             <h:form id="companyAdministration">
                 <p:growl autoUpdate="true" life="500" sticky="true" />
                 <ui:include src="pageFragments/authorizationToolbar.xhtml" />
-                <!--
-                <p:tabView id="adminTab">
-                    <p:tab id="categoriesAdministration" title="Administracija tvrtki">
-                        <ui:include src="pageFragments/admin/companyForm.xhtml"/>
-                        <ui:include src="pageFragments/admin/companyAllocationsForm.xhtml" />
-                    </p:tab>
-                    <p:tab id="usersAdministration" title="Administracija korisnika">
-                        <ui:include src="pageFragments/admin/userForm.xhtml" />
-                    </p:tab>
 
-
-                </p:tabView>
-                -->
 
                 <p:panel header="Administracija tvrtki"
                          rendered="#{authBackingBean.admin}"

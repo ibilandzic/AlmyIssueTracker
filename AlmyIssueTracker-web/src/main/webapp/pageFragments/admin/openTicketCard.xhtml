@@ -12,6 +12,7 @@
                 color: activecaption !important;
                 font-weight: bold;
             }
+            
             .itemLabel{
                 font-weight: bold;
                 font-size: small
@@ -31,7 +32,13 @@
             .infoMessage{
                 background-color: blanchedalmond;
             }
+            .ui-datagrid-no-border>.ui-datagrid-content {
+                border: none;
+            }
 
+            .dropDown{
+                width: 80% !important;
+            }
         </style>
 
         
@@ -40,24 +47,30 @@
                     id="ticketGrid"
                     emptyMessage="Nema otvorenih prijava"
                     value="#{ticketsManagedBean.openTickets}"
-                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                    rowsPerPageTemplate="2,3"
+                    paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown} Broj otvorenih prijava: #{ticketsManagedBean.openTickets.size()}  "
+                    rowsPerPageTemplate="2,4,6"
                     paginator="true"
                     var="item"
-                    
+                    columns="2"
+                    rows="2"
+                    styleClass="ui-datagrid-no-border"
                     >
-            <p:panelGrid columns="2">
-                <p:outputLabel value="Id prijave:" for="id" styleClass="itemLabel"/>
+            <p:panelGrid columns="2"
+                         >
+                <p:outputLabel value="ID prijave:" for="id" styleClass="itemLabel"/>
                 <h:outputText id="id" value="#{item.id}" title="Id prijave"/>
 
                 <p:outputLabel value="Naslov:" for="title" styleClass="itemLabel" />
-                <h:inputText id="title" value="#{item.title}" title="Nalsov" styleClass="inputFields"/>
+                <h:inputText id="title" value="#{item.title}" title="Naslov" styleClass="inputFields"/>
 
                 <p:outputLabel value="Opis:" for="description" styleClass="itemLabel"/>
-                <h:inputText id="description" value="#{item.description}" title="Kratki opis" styleClass="inputFields"/>
+                <h:inputTextarea id="description" value="#{item.description}" title="Kratki opis" styleClass="inputFields"/>
                 
-                <p:outputLabel value="Prijavu otvorio:" for="reportedBy" styleClass="itemLabel"/>
-                <h:outputText id="reportedBy" value="#{item.reportedBy}" title="Prijavu otvorio"/>
+                <p:outputLabel value="Kontakt osoba:" for="contactPerson" styleClass="itemLabel"/>
+                <h:outputText id="contactPerson" value="#{item.contactPerson}" title="Kontakt osoba" />
+                
+                <p:outputLabel value="Kontakt telefon:" for="contactPhone" styleClass="itemLabel"/>
+                <h:outputText id="contactPhone" value="#{item.contactPhone}" title="Kontakt telefon"/>
                 
                 <p:outputLabel value="Ime tvrtke:" for="company" styleClass="itemLabel"/>
                 <h:outputText id="company" value="#{item.allocationId.companyId.name}"/>
@@ -75,41 +88,48 @@
                 <h:outputText id="floorPart" value="#{item.allocationId.floorPart}"/>
                 
                 <p:outputLabel value="Dodjeljeno korisniku:" for="assignedTo" styleClass="itemLabel"/>
-                <p:selectOneMenu id="assignedTo" value="#{item.assignedTo}">
-                    <f:selectItems value="#{ticketsManagedBean.employeeList}" var="emp" itemLabel="#{emp.username}" itemValue="#{emp.username}"/>
+                <p:selectOneMenu id="assignedTo" value="#{item.assignedTo}" styleClass="dropDown">
+                    <f:selectItems value="#{ticketsManagedBean.employeeList}" var="emp" itemLabel="#{emp.firstName} #{emp.lastName}" itemValue="#{emp.username}"/>
                 </p:selectOneMenu>
                 <p:outputLabel value="Kategorija:" for="category" styleClass="itemLabel"/>
-                <p:selectOneMenu id="category" value="#{item.category}">
+                <p:selectOneMenu id="category" value="#{item.category}" styleClass="dropDown">
                     <f:selectItems value="#{ticketsManagedBean.categories}" var="cat" itemLabel="#{cat.name}" itemValue="#{cat.name}"/> 
                 </p:selectOneMenu>
 
                 <p:outputLabel value="Prioritet:" for="priority" styleClass="itemLabel"/>          
-                <p:selectOneMenu id="priority" value="#{item.priority}">
+                <p:selectOneMenu id="priority" value="#{item.priority}" styleClass="dropDown">
                     <f:selectItems value="#{ticketsManagedBean.priorities}" var="pri" itemLabel="#{pri.name}" itemValue="#{pri.name}"/> 
                 </p:selectOneMenu>
 
                 <p:outputLabel value="Status:" for="status" styleClass="itemLabel"/>
-                <p:selectOneMenu id="status" value="#{item.status}">
+                <p:selectOneMenu id="status" value="#{item.status}" >
                     <f:selectItems value="#{ticketsManagedBean.statuses}" var="sta" itemLabel="#{sta.name}" itemValue="#{sta.name}"/> 
                 </p:selectOneMenu>
+                
+                <p:outputLabel value="Kreirano:" for="createdAt" styleClass="itemLabel"/>
+                <h:outputText id="createdAt" value="#{item.createdAt}" >
+                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" dateStyle="both" />
+                </h:outputText>
 
                 
                 
 
             </p:panelGrid>
-            <p:spacer height="5"/>
+            <p:spacer height="10px"/>
             <p:commandLink action="#{ticketsManagedBean.setSelectedTicket(item)}" 
                            value="Odaberi prijavu" 
-                           update=":#{p:component('messageList')} :#{p:component('addMessageBtn')}"
+                           update=":#{p:component('messageList')} :#{p:component('addMessageBtn')} :#{p:component('ticketId')}"
                            styleClass="detailsLink"
+                           onclick="this.style.color='purple';"
                            />
-            <p:spacer width="10"/>
+            <p:spacer width="10px"/>
 
             <p:commandLink value="Editiraj prijavu"
                            styleClass="detailsLink"
                            action="#{ticketsManagedBean.editTicket(item)}"
                            update=":#{p:component('ticketGrid')} :#{p:component('closedTicketGrid')}"
                            />
+            <p:spacer height="20px"/>
 
 
 

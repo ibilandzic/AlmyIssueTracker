@@ -1,6 +1,7 @@
 D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\util\Constants.java
 D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\dao\AuthDAO.java
 D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\IssueCategory.java
+D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\util\EmailUtils.java
 D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\Priority.java
 D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\dao\MessageDAOLocal.java
 D:\Projects\test_projects\AlmyIssueTracker\AlmyIssueTracker-ejb\src\main\java\hr\codiraona\model\Allocation.java

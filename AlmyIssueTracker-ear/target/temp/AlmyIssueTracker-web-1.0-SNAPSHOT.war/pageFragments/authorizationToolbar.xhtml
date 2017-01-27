@@ -7,12 +7,43 @@
       xmlns:p="http://primefaces.org/ui">
 
     <ui:component id="autorizationComponent">
-        <p:menubar id="adminMenu"
+        <style>
+            .menuitemstyle{
+                font-size: 11px;
+            }
+            
+            </style>
+
+            <p:menubar id="adminMenu"
                    style="border: none">
-            <p:menuitem value="Tvrtke" url="companyAdministration.xhtml" icon="ui-icon-document" rendered="#{authBackingBean.admin}" style="font-size: 11px"/>
-            <p:menuitem value="Generalne postavke" icon="ui-icon-gear" url="generalAdministration.xhtml" rendered="#{authBackingBean.admin}" style="font-size: 11px"/>
-            <p:menuitem value="Prijave" url="tickets.xhtml" icon="ui-icon-note" rendered="#{authBackingBean.admin}" style="font-size: 11px"/>
+            <p:menuitem value="Tvrtke" 
+                        url="companyAdministration.xhtml" 
+                        icon="fa fa-building-o fa-lg" 
+                        rendered="#{authBackingBean.admin}" 
+                        styleClass="menuitemstyle"/>
+            <p:menuitem value="Generalne postavke" 
+                        icon="fa fa-cog fa-lg" 
+                        url="generalAdministration.xhtml" 
+                        rendered="#{authBackingBean.admin}"
+                        styleClass="menuitemstyle"/>
+            <p:menuitem value="Prijave" 
+                        url="tickets.xhtml" 
+                        icon="fa fa-bug fa-lg"
+                        rendered="#{authBackingBean.admin}"
+                        styleClass="menuitemstyle"/>
+            <p:menuitem value="Korisničke stranice" 
+                        url="userPage.xhtml" 
+                        icon="fa fa-user fa-lg" 
+                        rendered="#{authBackingBean.regularUser}"
+                        styleClass="menuitemstyle"/>
+            <p:menuitem value="Moji zadaci"
+                        url="employeePage.xhtml"
+                        icon="fa fa-tasks fa-lg"
+                        rendered="#{authBackingBean.admin or authBackingBean.employee}"
+                        styleClass="menuitemstyle"
+                        />
             <f:facet name="options">
+
                 <p:commandButton style="max-height: 30px; font-size: 12px"
                                  value="Odjava"  
                                  action="#{authBackingBean.logout()}"
@@ -26,16 +57,15 @@
             </f:facet>
         </p:menubar>
 
-        <p:dialog header="Login" widgetVar="loginDlg" resizable="false" modal="true">
-            <h:panelGrid columns="2" cellpadding="5">
-                <h:outputLabel for="username" value="Korisničko ime:" />
-                <p:inputText id="in_username" value="#{authBackingBean.username}" label="username" />
+        <p:dialog header="Unos korisničkih podataka" widgetVar="loginDlg" resizable="false" modal="true">
+            <h:panelGrid columns="1" style="text-align: center">
+                
+                <p:inputText id="in_username" value="#{authBackingBean.username}" placeholder="Korisničko ime..." />
 
-                <h:outputLabel for="password" value="Lozinka:" />
-                <p:password id="in_password" value="#{authBackingBean.password}" label="password" />
+                <p:password id="in_password" value="#{authBackingBean.password}" placeholder="Lozinka..." />
 
                 <f:facet name="footer">
-                    <p:commandButton value="Login" update="@all" action="#{authBackingBean.login()}"
+                    <p:commandButton value="Potvrda" update="@all" action="#{authBackingBean.login()}"
                                      oncomplete="PF('loginDlg').hide();"
                                      />
                 </f:facet>  

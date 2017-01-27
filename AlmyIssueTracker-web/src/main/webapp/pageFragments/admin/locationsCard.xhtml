@@ -24,7 +24,9 @@
                      editMode="row"
                      >
             <p:ajax event="rowEdit" listener="#{generalAdminBackingBean.updateLocation()}"/>
-            <p:ajax event="rowSelect" update=":#{p:component('allocationsTable')}" />
+            <p:ajax event="rowSelect" update=":#{p:component('allocationsTable')}
+                    :#{p:component('newAllocBtn')}
+                    :#{p:component('deleteAllocBtn')}" />
             <p:column>
                 <f:facet name="header">
                     <h:outputText value="Ime lokacije"/>

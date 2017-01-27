@@ -27,20 +27,27 @@
                 border:none;
             }
             
+            .myPanel.ui-panel-content{
+                border:none;
+            }
+            
+            
             .myDataList.ui-widget-content{
                 border:none;
             }
-
         </style>
         <p:panel styleClass="myPanel" rendered="#{authBackingBean.admin}">
             <f:facet name="header">
+                <h:outputText value="ID odabrane prijave: #{ticketsManagedBean.selectedTicket.id}"
+                              id="ticketId"
+                              />
+            </f:facet>
+            <f:facet name="footer">
                         <p:commandButton  disabled="#{ticketsManagedBean.selectedTicket eq null}"
                           id="addMessageBtn"
                           value="Nova poruka"
                           onclick="PF('newMessageDialog').show()"
                           title="Kreiraj novu poruku"
-                          
-                          
                           />
             </f:facet>
             
@@ -50,11 +57,12 @@
                     lazy="false"
                     value="#{ticketsManagedBean.selectedTicket.messagesList}"
                     var="msg"
-                    style="border: none"
+                    
                     type="none"
                     
                     >
             <p:panel header="Objavio: #{msg.postedBy}"
+                     style="font-size: smaller"
                      >
                 <p:inputTextarea rows="3" 
                                  cols="70" 
@@ -65,30 +73,10 @@
                                  />
                 <f:facet name="footer">
                     <h:outputText value="Poruka objavljena: #{msg.postedAt}" style="font-size: 11px;" >
-                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" dateStyle="medium" />
                 </h:outputText>
                 </f:facet>
             </p:panel>
-            <!--
-            <p:panelGrid columns="1" styleClass="myPanelGrid">
-                <h:outputText value="Objavio: #{msg.postedBy}" 
-                              style="text-align: left; font-size: 11px;"
-                              />
-
-                <p:inputTextarea rows="3" 
-                                 cols="70" 
-                                 autoResize="true" 
-                                 maxlength="255" 
-                                 value="#{msg.message}"
-                                 readonly="true"
-                                 />
-
-                <h:outputText value="#{msg.postedAt}" style="font-size: 11px; margin-left: 80%" >
-                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
-                </h:outputText>
-
-            </p:panelGrid>
-            -->
             <p:spacer height="10"/>
 
 

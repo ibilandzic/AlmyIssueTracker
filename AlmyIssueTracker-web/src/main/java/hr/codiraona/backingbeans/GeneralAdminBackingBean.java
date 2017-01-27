@@ -145,8 +145,8 @@ public class GeneralAdminBackingBean implements Serializable {
         newCategory = new Category();
         newPriority = new Priority();
         newAllocation = new Allocation();
-        selectedLocation = locations.get(0);
-        allocations = selectedLocation.getAllocationList();
+        //selectedLocation = locations.get(0);
+        //allocations = selectedLocation.getAllocationList();
         companies = companyDao.getAllCompanies();
     }
 

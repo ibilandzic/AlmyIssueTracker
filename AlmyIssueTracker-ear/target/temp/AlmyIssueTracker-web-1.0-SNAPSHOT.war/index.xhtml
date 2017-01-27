@@ -7,34 +7,51 @@
       xmlns:p="http://primefaces.org/ui">
     <f:view contentType="text/html">
         <h:head>
-            <title>Index page</title>
+            <title>Almy ticketing</title>
+            <style>
+                .myPanelGrid.ui-panelgrid>*>tr,
+                .myPanelGrid.ui-panelgrid>*>tr>td{
+                    border:none;
+                }
+            </style>
         </h:head>
         <h:body>
-            <p:layoutUnit position="north" >
-                <p:toolbar id="authToolbar">
-                    <f:facet name="right">
-                        <ui:include src="pageFragments/authorizationToolbar.xhtml" />
-                    </f:facet>
-                </p:toolbar>
 
+            <h:form>
+                <p:dialog header="Autentifikacija korisnika" widgetVar="loginDlg" 
+                          resizable="false" 
+                          modal="true" 
+                          visible="#{not authBackingBean.isRegistered}">
+                    <h:panelGrid columns="1" style="text-align: center">
+                        
+                        <p:inputText id="in_username" value="#{authBackingBean.username}" size="30" 
+                                     placeholder="Korisničko ime..."
+                                     style="text-align: center"
+                                     />
+ 
+                        
+                        <p:password id="in_password" value="#{authBackingBean.password}" size="30" goodLabel="Točno"
+                                    placeholder="Lozinka..." style="text-align: center"/>
+                        
 
-            </p:layoutUnit>
-            <p:layoutUnit position="centar" rendered="#{authBackingBean.admin}" id="dataUnit">    
-                <!--
-                  <ui:include src="pageFragments/companyForm.xhtml"></ui:include> 
-                  <ui:include src="pageFragments/userForm.xhtml"></ui:include>
-                -->
-            </p:layoutUnit>
-            <p:layoutUnit position="south">
+                        <f:facet name="footer">
+                            <p:commandButton value="Potvrdi" update="@all" action="#{authBackingBean.login()}"
+                                             oncomplete="PF('loginDlg').hide();"
+                                             
+                                             />
+                        </f:facet>  
+                        
+                    </h:panelGrid>
+                </p:dialog>
                 
-            </p:layoutUnit>
-            
-            <p:layoutUnit position="south">
-                <p:dock position="top">
-                    <p:menuitem value="Company" icon="/resources/icons/Organization.png" url="index.xhtml"/>
-  
-                </p:dock>
-            </p:layoutUnit>
+                <h:outputText value="Dobrodošli #{authBackingBean.currentUser.firstName}" 
+                              rendered="#{authBackingBean.isRegistered}" 
+                              />
+              
+                
+            </h:form>
+
+
 
         </h:body>
     </f:view>

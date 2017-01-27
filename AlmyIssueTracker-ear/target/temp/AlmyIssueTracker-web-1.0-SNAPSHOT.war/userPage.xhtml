@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:ui="http://java.sun.com/jsf/facelets">
     <h:head>
-        <title>Administracija tvrtki i korisnika</title>
+        <title>Pregled prijava i osobnih podataka</title>
         <style>
             .detailsLink:hover{
                 color: activecaption !important;
@@ -38,7 +38,7 @@
         <f:view>
             <h:form id="companyAdministration">
                 <p:growl autoUpdate="true" life="500" sticky="true" />
-                <ui:include src="pageFragments/user/authorizationToolbar.xhtml" />
+                <ui:include src="pageFragments/authorizationToolbar.xhtml" />
                 <p:tabView rendered="#{authBackingBean.isRegistered}" id="userOperations">
                     <p:tab id="personalDataTab" titletip="Osobni podaci" title="Pregled osobnih podataka" >
                         <ui:include src="pageFragments/user/personalData.xhtml" />

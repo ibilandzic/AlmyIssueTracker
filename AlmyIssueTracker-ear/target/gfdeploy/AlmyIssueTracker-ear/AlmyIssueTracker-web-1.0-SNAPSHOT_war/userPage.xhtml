@@ -38,7 +38,7 @@
         <f:view>
             <h:form id="companyAdministration">
                 <p:growl autoUpdate="true" life="500" sticky="true" />
-                <ui:include src="pageFragments/user/authorizationToolbar.xhtml" />
+                <ui:include src="pageFragments/authorizationToolbar.xhtml" />
                 <p:tabView rendered="#{authBackingBean.isRegistered}" id="userOperations">
                     <p:tab id="personalDataTab" titletip="Osobni podaci" title="Pregled osobnih podataka" >
                         <ui:include src="pageFragments/user/personalData.xhtml" />

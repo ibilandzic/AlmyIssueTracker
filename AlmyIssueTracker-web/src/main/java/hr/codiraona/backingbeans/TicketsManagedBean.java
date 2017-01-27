@@ -6,7 +6,6 @@
 package hr.codiraona.backingbeans;
 
 import hr.codiraona.dao.LocationDAOLocal;
-import hr.codiraona.dao.MessageDAOLocal;
 import hr.codiraona.dao.TicketAddDataDAOLocal;
 import hr.codiraona.dao.TicketDAOLocal;
 import hr.codiraona.dao.UserDAOLocal;
@@ -18,6 +17,7 @@ import hr.codiraona.model.Status;
 import hr.codiraona.model.Ticket;
 import hr.codiraona.model.Users;
 import hr.codiraona.util.Constants;
+import hr.codiraona.utils.MessageUtils;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
@@ -45,8 +45,7 @@ public class TicketsManagedBean implements Serializable {
     /**
      * Creates a new instance of TicketsManagedBean
      */
-    private static final int SUCCESSFULL = 1;
-    private static final int UN_SUCCESSFULL = 0;
+   
     private Logger log = Logger.getLogger(this.getClass().getName());
 
     @ManagedProperty(value = "#{authBackingBean}")
@@ -245,8 +244,8 @@ public class TicketsManagedBean implements Serializable {
      * Creates new message for specific ticket
      */
     public void createNewMessage() {
-        log.log(Level.INFO, authBean.getUsername());
-        newMessage.setPostedBy(authBean.getUsername());
+        log.log(Level.INFO, authBean.getCurrentUser().getUsername());
+        newMessage.setPostedBy(authBean.getCurrentUser().getUsername());
         newMessage.setTicketId(selectedTicket);
         newMessage.setPostedAt(new Timestamp(System.currentTimeMillis()));
         selectedTicket.getMessagesList().add(newMessage);
@@ -263,24 +262,14 @@ public class TicketsManagedBean implements Serializable {
             log.log(Level.INFO, "Ticket updated. Refreshing opened ticket grid...");
             openTickets = ticketDao.getAllOpenedTickets();
             closedTickets = ticketDao.getAllClosedTickets();
-            editMessage(ticket.getId(), SUCCESSFULL);
+            MessageUtils.showResponseMessage("Editiranje prijave je uspjelo. Editirana prijava. "+ticket.getId(), "Successfull");
 
         } else {
             log.log(Level.WARNING, "Selected ticket is null, unable to edit ticket. Exiting...");
-             editMessage(ticket.getId(), UN_SUCCESSFULL);
+            MessageUtils.showResponseMessage("Editiranje prijave nije uspjelo.", "Failure");
         }
     }
 
-    private void editMessage(int id, int successfull) {
-        FacesContext context = FacesContext.getCurrentInstance();
-
-        if (successfull == SUCCESSFULL){
-           context.addMessage(null, new FacesMessage("Uspješno editiranje", "Uspješno ste editirali prijavu id: "+id)); 
-        }
-        else{
-            context.addMessage(null, new FacesMessage("Neuspješno editiranje", "Neuspješno editiranje prijave id: "+id)); 
-        }
-    }
 
     private int getPriorityNum(String name) {
         int priorityNumber = 0;

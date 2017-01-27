@@ -30,17 +30,15 @@
             .myDataList.ui-widget-content{
                 border:none;
             }
-
         </style>
-        <p:panel styleClass="myPanel">
+        <p:panel styleClass="myPanel" rendered="#{authBackingBean.admin or authBackingBean.employee}">
             <f:facet name="header">
-                <p:commandButton  disabled="#{employeeBackingBean.selectedTicket eq null}"
+                <p:commandButton  disabled="#{(employeeBackingBean.selectedTicket eq null) 
+                                              or (employeeBackingBean.selectedTicket.status eq 'CLOSED')}"
                           id="addMessageBtn"
                           value="Nova poruka"
                           onclick="PF('newMessageDialog').show()"
                           title="Kreiraj novu poruku"
-                          
-                          
                           />
             </f:facet>
             
@@ -65,11 +63,10 @@
                                  />
                 <f:facet name="footer">
                     <h:outputText value="Poruka objavljena: #{msg.postedAt}" style="font-size: 11px;" >
-                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                        <f:convertDateTime pattern="dd.MM.yyyy HH:mm" dateStyle="both"/>
                 </h:outputText>
                 </f:facet>
             </p:panel>
-           
             <p:spacer height="10"/>
 
 

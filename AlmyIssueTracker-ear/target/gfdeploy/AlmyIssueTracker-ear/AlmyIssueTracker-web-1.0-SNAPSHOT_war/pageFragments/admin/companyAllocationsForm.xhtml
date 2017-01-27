@@ -14,9 +14,11 @@
         <p:dataTable value="#{companyBackingBean.selectedCompany.allocationList}" 
                      var="item"
                      rowKey="#{item.id}"
-                     emptyMessage="Nema alociranog prostora za tvrtku: #{companyBackingBean.selectedCompany.name}"
+                     emptyMessage="Alokacija nije pronađena"
                      id="allocTable"
                      widgetVar="allocTable"
+                     style="width: auto; text-align: center"
+                     tableStyle="width: auto"
                      >
             <p:column>
                 <f:facet name="header">
@@ -57,10 +59,19 @@
                                />
 
             </p:column>
-            <f:facet name="footer">
-                <p:commandButton value="Alociraj prostor" onclick="PF('alocDlg').show()"/>
-            </f:facet>
+
         </p:dataTable>
+        <h:panelGrid columns="2" 
+                     cellpadding="5px" 
+                     styleClass="myPanelGrid"
+                     >
+            <p:commandButton value="Alociraj prostor" 
+                             id="allocBtn"
+                             onclick="PF('alocDlg').show()"
+                             widgetVar="allocBtn"
+                             disabled="#{companyBackingBean.selectedCompany eq null}"
+                             />       
+        </h:panelGrid>
 
         <p:dialog id="alocDlg"
                   header="Alociranje prostora"
